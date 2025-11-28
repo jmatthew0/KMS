@@ -1,4 +1,4 @@
-import './Dashboard.css';
+import './css/Dashboard.css';
 import { FileText, Users, TrendingUp, Clock } from 'lucide-react';
 
 const Dashboard = () => {

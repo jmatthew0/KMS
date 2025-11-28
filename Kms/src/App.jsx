@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import Login from './Login'
-import Register from './Register'
-import Navbar from './Navbar'
-import Home from './Home'
-import DocumentsPortal from './DocumentsPortal'
-import FAQs from './FAQs'
-import Profile from './Profile'
+import Login from './Components/Login'
+import Register from './Components/Register'
+import Navbar from './Components/Navbar'
+import Home from './Components/Home'
+import DocumentsPortal from './Components/DocumentsPortal'
+import FAQs from './Components/FAQs'
+import Profile from './Components/Profile'
 import Sidebar from './Admin/Sidebar'
 import Dashboard from './Admin/Dashboard'
 import Analytics from './Admin/Analytics'
@@ -59,10 +59,14 @@ function App() {
                 onNavigate={handleNavigate}
                 onLogout={handleLogout}
               />
+              
               <div style={{ flex: 1, overflowY: 'auto' }}>
+                
+                {/* ADMIN PAGES */}
                 {currentPage === 'dashboard' && <Dashboard />}
                 {currentPage === 'analytics' && <Analytics />}
-                {currentPage === 'users' && <UserManagement />}
+                {currentPage === 'user-management' && <UserManagement />}
+
               </div>
             </div>
           ) : (
@@ -72,7 +76,12 @@ function App() {
                 onNavigate={handleNavigate}
                 onLogout={handleLogout}
               />
-              {currentPage === 'home' && <Home onNavigateToDocuments={() => handleNavigate('documents')} />}
+
+              {/* USER PAGES */}
+              {currentPage === 'home' && (
+                <Home onNavigateToDocuments={() => handleNavigate('documents')} />
+              )}
+
               {currentPage === 'documents' && <DocumentsPortal />}
               {currentPage === 'faqs' && <FAQs />}
               {currentPage === 'profile' && <Profile />}

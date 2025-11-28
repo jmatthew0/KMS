@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import './DocumentsPortal.css';
+import '../Css/DocumentsPortal.css';
 import { Search, Upload, FileText, Download, Eye, Star } from 'lucide-react';
 
 export default function DocumentsPortal() {

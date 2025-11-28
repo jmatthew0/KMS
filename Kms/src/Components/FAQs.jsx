@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './FAQs.css';
+import '../Css/FAQs.css';
 import { ChevronDown, Search, ThumbsUp, ThumbsDown, Plus, X } from 'lucide-react';
 
 export default function FAQs() {

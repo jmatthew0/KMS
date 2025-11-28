@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import './Login.css';
-import kmsImage from './assets/kms.png';
-import outlookIcon from './assets/outlook.png';
+import '../Css/Login.css';
+import kmsImage from '../assets/kms.png';
+import outlookIcon from '../assets/outlook.png';
 import { Eye, EyeOff } from 'lucide-react';
 
 const Login = ({ onNavigateToRegister, onLoginSuccess }) => {

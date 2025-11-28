@@ -1,4 +1,4 @@
-import './Analytics.css';
+import './css/Analytics.css';
 import { Eye, Download, FileText, TrendingUp, Users, Activity } from 'lucide-react';
 import {
     BarChart,
@@ -240,7 +240,10 @@ const Analytics = () => {
   </div>
 
   <div className="chart-wrap">
-    <ResponsiveContainer width="100%" height="100%">
+  <ResponsiveContainer width="100%" height={320}>
+
+
+
       <BarChart
         data={uploadTrends}
         barCategoryGap="10%"  

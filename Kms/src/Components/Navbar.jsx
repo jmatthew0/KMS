@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './Navbar.css';
+import '../Css/Navbar.css';
 import { Home, FileText, HelpCircle, LogOut, User, ChevronDown } from 'lucide-react';
 
 export default function Navbar({ currentPage, onNavigate, onLogout }) {

@@ -1,4 +1,5 @@
-import './UserManagement.css';
+import "./css/UserManagement.css";
+
 import { Users, Search, Filter, MoreVertical, Edit, Trash2, UserCheck, UserX } from 'lucide-react';
 import { useState } from 'react';
 

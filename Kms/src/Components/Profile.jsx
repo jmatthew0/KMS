@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Profile.css';
+import "../Css/Profile.css";
 import { FileText, Upload, Activity, Eye, EyeOff } from 'lucide-react';
 
 export default function Profile() {

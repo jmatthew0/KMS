@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Home.css';
+import '../Css/Home.css';
 import { 
   FileText, TrendingUp, Users, Clock, Upload, Eye, 
   Edit3, Trash2, History, Search, MessageSquare, X, Download

@@ -1,0 +1,147 @@
+/* ============================
+   SIDEBAR CONTAINER
+============================ */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background-color: white;
+  border-right: 1px solid #e5e7eb;
+  padding: 1.5rem 1rem;
+  font-family: "Asap", sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2000;
+  transition: transform 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+/* Mobile Drawer from Right */
+@media (max-width: 768px) {
+  .sidebar {
+    left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid #e5e7eb;
+    transform: translateX(100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* ============================
+   HEADER
+============================ */
+.sidebar-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.sidebar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* ============================
+   MENU AREA
+============================ */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  transition: 0.2s;
+}
+
+.sidebar-item:hover {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.sidebar-item.active {
+  background-color: #2563eb;
+  color: white;
+}
+
+.sidebar-item.active .sidebar-icon {
+  color: white;
+}
+
+.sidebar-icon {
+  color: #6b7280;
+}
+
+.sidebar-item:hover .sidebar-icon {
+  color: #374151;
+}
+
+/* ============================
+   LOGOUT (BOTTOM POSITIONED)
+============================ */
+.push-down {
+  margin-top: auto; /* pushes logout down */
+}
+
+.sidebar-item.logout {
+  margin-bottom: 2rem; /* lift logout slightly above bottom */
+  color: #dc2626;
+}
+
+.sidebar-item.logout:hover {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.sidebar-item.logout .sidebar-icon {
+  color: #dc2626;
+}
+
+/* ============================
+   MOBILE HAMBURGER
+============================ */
+.mobile-menu-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem 0.6rem;
+    border-radius: 0.5rem;
+    z-index: 3000;
+    cursor: pointer;
+  }
+}
+
+/* ============================
+   DARK OVERLAY
+============================ */
+.sidebar-overlay {
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1500;
+}
