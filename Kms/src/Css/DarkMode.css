@@ -1,0 +1,617 @@
+
+html,
+body {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+    /* Backgrounds */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    
+    /* Text Colors */
+    --text-primary: #1f2937;
+    --text-secondary: #374151;
+    --text-tertiary: #6b7280;
+    --text-muted: #9ca3af;
+    
+    /* Borders */
+    --border-primary: #e5e7eb;
+    --border-secondary: #d1d5db;
+    
+    /* Accents */
+    --accent-blue: #2563eb;
+    --accent-blue-hover: #1d4ed8;
+    --accent-blue-light: #eff6ff;
+    --accent-blue-dark: #1e40af;
+    
+    /* Status Colors */
+    --success-bg: #d1fae5;
+    --success-text: #065f46;
+    --warning-bg: #fef3c7;
+    --warning-text: #92400e;
+    --error-bg: #fee2e2;
+    --error-text: #991b1b;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    
+    /* Card/Modal */
+    --card-bg: #ffffff;
+    --modal-overlay: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* ============================================
+     CSS VARIABLES - DARK MODE
+  ============================================ */
+  .dark-mode {
+    /* Backgrounds */
+    --bg-primary: #1f2937;
+    --bg-secondary: #111827;
+    --bg-tertiary: #374151;
+    
+    /* Text Colors */
+    --text-primary: #f9fafb;
+    --text-secondary: #e5e7eb;
+    --text-tertiary: #d1d5db;
+    --text-muted: #9ca3af;
+    
+    /* Borders */
+    --border-primary: #374151;
+    --border-secondary: #4b5563;
+    
+    /* Accents */
+    --accent-blue: #3b82f6;
+    --accent-blue-hover: #2563eb;
+    --accent-blue-light: #1e3a8a;
+    --accent-blue-dark: #60a5fa;
+    
+    /* Status Colors */
+    --success-bg: #065f46;
+    --success-text: #d1fae5;
+    --warning-bg: #92400e;
+    --warning-text: #fef3c7;
+    --error-bg: #991b1b;
+    --error-text: #fee2e2;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    
+    /* Card/Modal */
+    --card-bg: #1f2937;
+    --modal-overlay: rgba(0, 0, 0, 0.7);
+  }
+  
+  /* ============================================
+     BODY
+  ============================================ */
+  body {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* ============================================
+     BACKGROUNDS - CARDS & CONTAINERS
+  ============================================ */
+  .dark-mode .navbar,
+  .dark-mode .sidebar,
+  .dark-mode .documents-header,
+  .dark-mode .profile-section,
+  .dark-mode .recent-section,
+  .dark-mode .stat-card,
+  .dark-mode .document-card,
+  .dark-mode .faq-item,
+  .dark-mode .user-stat-card,
+  .dark-mode .analytics-section,
+  .dark-mode .dashboard-section,
+  .dark-mode .user-management-section,
+  .dark-mode .managefaqs-container .faq-modal-content,
+  .dark-mode .modal-content,
+  .dark-mode .modal-content-small,
+  .dark-mode .submission-card,
+  .dark-mode .submission-card-compact,
+  .dark-mode .category-card,
+  .dark-mode .activity-item,
+  .dark-mode .comment-item,
+  .dark-mode .version-item,
+  .dark-mode .attachment-info {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-primary) !important;
+  }
+  
+  /* ============================================
+     TEXT COLORS - PRIMARY (HEADINGS)
+  ============================================ */
+  .dark-mode .dashboard-title,
+  .dark-mode .analytics-title,
+  .dark-mode .user-management-title,
+  .dark-mode .page-title,
+  .dark-mode .documents-title,
+  .dark-mode .faqs-title,
+  .dark-mode .home-title,
+  .dark-mode .profile-title,
+  .dark-mode .section-title,
+  .dark-mode .modal-title,
+  .dark-mode .document-name,
+  .dark-mode .doc-name,
+  .dark-mode .user-name-cell,
+  .dark-mode .stat-value,
+  .dark-mode .submission-question,
+  .dark-mode .category-card h3,
+  .dark-mode .activity-user,
+  .dark-mode .comment-header strong,
+  .dark-mode .brand-title,
+  .dark-mode .sidebar-title,
+  .dark-mode .faq-question,
+  .dark-mode .login-title,
+  .dark-mode .register-title {
+    color: var(--text-primary) !important;
+  }
+  
+  /* ============================================
+     TEXT COLORS - SECONDARY (BODY TEXT)
+  ============================================ */
+  .dark-mode .dashboard-subtitle,
+  .dark-mode .analytics-subtitle,
+  .dark-mode .user-management-subtitle,
+  .dark-mode .page-subtitle,
+  .dark-mode .documents-subtitle,
+  .dark-mode .faqs-subtitle,
+  .dark-mode .home-subtitle,
+  .dark-mode .profile-subtitle,
+  .dark-mode .stat-label,
+  .dark-mode .doc-date,
+  .dark-mode .user-email,
+  .dark-mode .date-text,
+  .dark-mode .submission-meta,
+  .dark-mode .submission-date,
+  .dark-mode .category-count,
+  .dark-mode .activity-action,
+  .dark-mode .activity-meta,
+  .dark-mode .comment-text,
+  .dark-mode .meta-text,
+  .dark-mode .info-label,
+  .dark-mode .form-label,
+  .dark-mode .login-subtitle,
+  .dark-mode .register-subtitle {
+    color: var(--text-tertiary) !important;
+  }
+  
+  /* ============================================
+     INPUTS & FORMS
+  ============================================ */
+  .dark-mode .search-input,
+  .dark-mode .search-input-home,
+  .dark-mode .form-input,
+  .dark-mode .form-select,
+  .dark-mode .form-textarea,
+  .dark-mode .filter-select,
+  .dark-mode .comment-input {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  .dark-mode .search-input::placeholder,
+  .dark-mode .form-input::placeholder,
+  .dark-mode .form-textarea::placeholder {
+    color: var(--text-muted) !important;
+  }
+  
+  /* ============================================
+     BUTTONS - NEUTRAL
+  ============================================ */
+  .dark-mode .nav-link,
+  .dark-mode .sidebar-item,
+  .dark-mode .filter-button,
+  .dark-mode .action-button,
+  .dark-mode .category-btn,
+  .dark-mode .tab-button,
+  .dark-mode .icon-btn,
+  .dark-mode .action-btn,
+  .dark-mode .rating-btn,
+  .dark-mode .admin-action-btn {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+  }
+  
+  .dark-mode .nav-link:hover,
+  .dark-mode .sidebar-item:hover,
+  .dark-mode .filter-button:hover,
+  .dark-mode .category-btn:hover,
+  .dark-mode .icon-btn:hover {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-secondary) !important;
+  }
+  
+  .dark-mode .nav-link-active,
+  .dark-mode .sidebar-item.active,
+  .dark-mode .filter-button-active,
+  .dark-mode .category-btn-active {
+    background-color: var(--accent-blue) !important;
+    color: white !important;
+  }
+  
+  /* ============================================
+     BUTTONS - PRIMARY
+  ============================================ */
+  .dark-mode .upload-button,
+  .dark-mode .view-all-button,
+  .dark-mode .submit-question-btn,
+  .dark-mode .edit-button,
+  .dark-mode .btn-primary,
+  .dark-mode .btn-submit,
+  .dark-mode .approve-btn,
+  .dark-mode .review-btn,
+  .dark-mode .action-btn.primary {
+    background-color: var(--accent-blue) !important;
+    border-color: var(--accent-blue) !important;
+  }
+  
+  .dark-mode .upload-button:hover,
+  .dark-mode .view-all-button:hover,
+  .dark-mode .submit-question-btn:hover,
+  .dark-mode .edit-button:hover,
+  .dark-mode .btn-primary:hover,
+  .dark-mode .btn-submit:hover,
+  .dark-mode .approve-btn:hover {
+    background-color: var(--accent-blue-hover) !important;
+  }
+  
+  /* ============================================
+     TABLES
+  ============================================ */
+  .dark-mode .documents-table th,
+  .dark-mode .analytics-table th,
+  .dark-mode .users-table th {
+    color: var(--text-tertiary) !important;
+    border-bottom-color: var(--border-primary) !important;
+  }
+  
+  .dark-mode .documents-table td,
+  .dark-mode .analytics-table td,
+  .dark-mode .users-table td {
+    color: var(--text-secondary) !important;
+    border-bottom-color: var(--border-primary) !important;
+  }
+  
+  .dark-mode .documents-table tbody tr:hover,
+  .dark-mode .analytics-table tbody tr:hover,
+  .dark-mode .users-table tbody tr:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+  
+  /* ============================================
+     BADGES
+  ============================================ */
+  .dark-mode .category-badge {
+    background-color: var(--accent-blue-light) !important;
+    color: var(--accent-blue-dark) !important;
+  }
+  
+  .dark-mode .status-badge.approved,
+  .dark-mode .helpful-badge,
+  .dark-mode .approved-badge {
+    background-color: var(--success-bg) !important;
+    color: var(--success-text) !important;
+  }
+  
+  .dark-mode .status-badge.pending,
+  .dark-mode .pending-badge,
+  .dark-mode .user-submitted-badge {
+    background-color: var(--warning-bg) !important;
+    color: var(--warning-text) !important;
+  }
+  
+  .dark-mode .status-badge.rejected,
+  .dark-mode .rejected-badge {
+    background-color: var(--error-bg) !important;
+    color: var(--error-text) !important;
+  }
+  
+  /* ============================================
+     DROPDOWNS
+  ============================================ */
+  .dark-mode .dropdown-menu,
+  .dark-mode .action-dropdown {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-primary) !important;
+    box-shadow: var(--shadow-lg) !important;
+  }
+  
+  .dark-mode .dropdown-item,
+  .dark-mode .action-item {
+    color: var(--text-secondary) !important;
+  }
+  
+  .dark-mode .dropdown-item:hover,
+  .dark-mode .action-item:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+  
+  /* ============================================
+     PAGE CONTAINERS
+  ============================================ */
+  .dark-mode .home-container,
+  .dark-mode .documents-container,
+  .dark-mode .faqs-container,
+  .dark-mode .profile-container,
+  .dark-mode .admin-dashboard,
+  .dark-mode .analytics-container,
+  .dark-mode .user-management-container,
+  .dark-mode .managefaqs-container {
+    background-color: var(--bg-secondary) !important;
+  }
+  
+  /* ============================================
+     HOVER STATES
+  ============================================ */
+  .dark-mode .document-card:hover,
+  .dark-mode .recent-doc-card:hover,
+  .dark-mode .activity-item:hover,
+  .dark-mode .version-item:hover,
+  .dark-mode .faq-item:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+  
+  /* ============================================
+     SPECIAL ELEMENTS
+  ============================================ */
+  .dark-mode .search-box {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-primary) !important;
+  }
+  
+  .dark-mode .viewer-body,
+  .dark-mode .document-summary,
+  .dark-mode .avatar-section,
+  .dark-mode .faq-meta {
+    background-color: var(--bg-tertiary) !important;
+  }
+  
+  .dark-mode .attachments-section {
+    background-color: var(--accent-blue-light) !important;
+    border-color: var(--accent-blue) !important;
+  }
+  
+  /* ============================================
+     ICONS
+  ============================================ */
+  .dark-mode .search-icon,
+  .dark-mode .search-icon-home,
+  .dark-mode .chevron-icon,
+  .dark-mode .password-toggle-btn {
+    color: var(--text-muted) !important;
+  }
+  
+  /* ============================================
+     PROGRESS BAR
+  ============================================ */
+  .dark-mode .progress-bar {
+    background-color: var(--bg-tertiary) !important;
+  }
+  
+  /* ============================================
+     LOGIN/REGISTER PAGES
+  ============================================ */
+  .dark-mode .login-form-section,
+  .dark-mode .register-form-section {
+    background-color: var(--bg-primary) !important;
+  }
+  
+  .dark-mode .login-container .form-input,
+  .dark-mode .register-container .form-input {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  /* ============================================
+     SMOOTH TRANSITIONS
+  ============================================ */
+  * {
+    transition: background-color 0.3s ease, 
+                border-color 0.3s ease, 
+                color 0.3s ease;
+  }
+  
+  /* Prevent transition on page load */
+  .preload * {
+    transition: none !important;
+  }
+
+  /* ============================================
+   ADDITIONAL TEXT COLOR FIXES
+============================================ */
+
+/* Home Page - Document Names and Metadata */
+.dark-mode .recent-doc-name,
+.dark-mode .recent-doc-content,
+.dark-mode .file-name,
+.dark-mode .version-number {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .recent-doc-meta,
+.dark-mode .doc-category,
+.dark-mode .doc-tag,
+.dark-mode .file-meta,
+.dark-mode .version-meta {
+  color: var(--text-tertiary) !important;
+}
+
+/* Profile Page - Info Values */
+.dark-mode .info-value,
+.dark-mode .activity-name {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .activity-doc {
+  color: var(--text-tertiary) !important;
+}
+
+/* FAQs Page - Question and Answer Text */
+.dark-mode .faq-answer,
+.dark-mode .rating-text,
+.dark-mode .meta-info,
+.dark-mode .submission-date-compact {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .submission-question-compact {
+  color: var(--text-primary) !important;
+}
+
+/* Documents Portal - Document Titles */
+.dark-mode .doc-title,
+.dark-mode .document-title,
+.dark-mode h3,
+.dark-mode h4 {
+  color: var(--text-primary) !important;
+}
+
+/* Additional Badge Fixes */
+.dark-mode .doc-category {
+  background-color: var(--accent-blue-light) !important;
+  color: var(--accent-blue-dark) !important;
+}
+
+.dark-mode .popular-badge {
+  background-color: var(--accent-blue-light) !important;
+  color: var(--accent-blue-dark) !important;
+}
+
+/* Comment and Activity Dates */
+.dark-mode .comment-date,
+.dark-mode .version-meta span {
+  color: var(--text-muted) !important;
+}
+
+/* Viewer Content */
+.dark-mode .viewer-body p,
+.dark-mode .viewer-content,
+.dark-mode .comment-text {
+  color: var(--text-tertiary) !important;
+}
+
+/* No Results / Empty States */
+.dark-mode .no-comments,
+.dark-mode .no-results,
+.dark-mode .no-activity,
+.dark-mode .loading-attachments {
+  color: var(--text-muted) !important;
+}
+
+/* Ensure all paragraph text is visible */
+.dark-mode p {
+  color: var(--text-tertiary) !important;
+}
+
+/* Heading overrides for dark mode */
+.dark-mode h1,
+.dark-mode h2 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: var(--text-secondary) !important;
+}
+
+/* ============================================
+   FAQ SPECIFIC FIXES
+============================================ */
+
+/* FAQ Item - Keep dark background even when expanded */
+.dark-mode .faq-item {
+    background-color: var(--card-bg) !important;
+  }
+  
+  /* FAQ Question Button */
+  .dark-mode .faq-question {
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
+  }
+  
+  /* FAQ Question on Hover - Don't turn white */
+  .dark-mode .faq-question:hover {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  /* FAQ Answer Container - Force dark background */
+  .dark-mode .faq-answer-container {
+    background-color: var(--card-bg) !important;
+    border-top-color: var(--border-primary) !important;
+  }
+  
+  /* FAQ Answer Text */
+  .dark-mode .faq-answer {
+    color: var(--text-tertiary) !important;
+    background-color: transparent !important;
+  }
+  
+  /* FAQ Rating Section */
+  .dark-mode .faq-rating {
+    background-color: transparent !important;
+  }
+  
+  /* FAQ Meta Section at bottom */
+  .dark-mode .faq-meta {
+    background-color: var(--bg-tertiary) !important;
+    border-top-color: var(--border-primary) !important;
+  }
+  
+  /* Popular and User Submitted Badges in Dark Mode */
+  .dark-mode .popular-badge {
+    background-color: #1e3a8a !important;
+    color: #93c5fd !important;
+  }
+  
+  .dark-mode .user-submitted-badge {
+    background-color: #78350f !important;
+    color: #fde68a !important;
+  }
+
+
+.dark-mode .approved-badge,
+.dark-mode .status-badge.approved {
+  background-color: #065f46 !important;
+  color: #d1fae5 !important;
+  font-weight: 600 !important;
+}
+
+/* Pending Badge - Keep good contrast */
+.dark-mode .pending-badge,
+.dark-mode .status-badge.pending {
+  background-color: #78350f !important;
+  color: #fde68a !important;
+  font-weight: 600 !important;
+}
+
+/* Rejected Badge - Keep good contrast */
+.dark-mode .rejected-badge,
+.dark-mode .status-badge.rejected {
+  background-color: #7f1d1d !important;
+  color: #fecaca !important;
+  font-weight: 600 !important;
+}
+
+/* Success Message in Submission Cards */
+.dark-mode .success-message {
+  background-color: #065f46 !important;
+  color: #d1fae5 !important;
+}

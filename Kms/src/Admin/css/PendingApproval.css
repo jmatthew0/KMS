@@ -1,0 +1,220 @@
+/* ---- PAGE WRAPPER ---- */
+.pending-approval-container {
+    padding: 2rem;
+    padding-left: 300px; /* 💥 More space from sidebar */
+    min-height: 100vh;
+    background: var(--bg-main);
+    font-family: "Inter", "Asap", sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+  /* ---- HEADER ---- */
+  .pending-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .pending-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  
+  /* ---- SEARCH ---- */
+  .pending-search {
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.6rem 0.9rem;
+    border-radius: 10px;
+  }
+  
+  .search-icon {
+    margin-right: 8px;
+    color: var(--text-muted);
+  }
+  
+  .pending-search-input {
+    border: none;
+    outline: none;
+    background: none;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+  
+  /* ---- TABLE SECTION ---- */
+  .pending-section {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+    margin-top: 1rem;
+  }
+  
+  .pending-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .pending-table th {
+    text-align: left;
+    padding: 14px 16px;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .pending-table td {
+    padding: 16px 16px; /* 💥 Even padding */
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-primary);
+    vertical-align: middle;
+  }
+  
+  /* ---- DOCUMENT TITLE CELL ---- */
+  .doc-title-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+  }
+  
+  .doc-icon {
+    color: var(--text-muted);
+  }
+  
+  /* ---- CATEGORY BADGE ---- */
+  .category-badge {
+    background: var(--primary-soft);
+    color: var(--primary);
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  /* ---- ACTION BUTTONS (IMPROVED) ---- */
+  .actions-wrapper {
+    display: flex;
+    gap: 10px; /* 💥 Buttons left-right */
+  }
+  
+  .approve-btn,
+  .reject-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: 0.2s ease;
+  }
+  
+  .approve-btn {
+    background: #1e90ff;
+    color: white;
+  }
+  
+  .approve-btn:hover {
+    background: #0b74d1;
+  }
+  
+  .reject-btn {
+    background: #dc2626;
+    color: white;
+  }
+  
+  .reject-btn:hover {
+    background: #b91c1c;
+  }
+  
+  /* ---- NO DATA ---- */
+  .no-data {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+  }
+  
+  /* ---- REJECT MODAL ---- */
+  .reject-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .reject-modal {
+    background: var(--bg-card);
+    width: 420px;
+    padding: 1.75rem;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+  
+  .reject-textarea {
+    width: 100%;
+    min-height: 110px;
+    border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 10px;
+    background: var(--bg-main);
+    color: var(--text-primary);
+  }
+  
+  /* ---- Reject modal actions ---- */
+  .reject-actions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .cancel-btn {
+    background: var(--border-light);
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+  }
+  
+  .confirm-reject-btn {
+    background: #dc2626;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+  }
+  
+  /* ---- DARK MODE ---- */
+  :root {
+    --bg-main: #f9fafb;
+    --bg-card: #ffffff;
+    --text-primary: #1f2937;
+    --text-muted: #6b7280;
+    --border: #d1d5db;
+    --border-light: #f1f5f9;
+    --primary: #2563eb;
+    --primary-soft: rgba(37, 99, 235, 0.15);
+  }
+  
+  .dark-mode {
+    --bg-main: #111827;
+    --bg-card: #1f2937;
+    --text-primary: #e5e7eb;
+    --text-muted: #9ca3af;
+    --border: #374151;
+    --border-light: #2d3542;
+    --primary: #3b82f6;
+    --primary-soft: rgba(59, 130, 246, 0.25);
+  }
+  

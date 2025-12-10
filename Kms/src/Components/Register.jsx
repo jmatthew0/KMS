@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import "../Css/Register.css";
-
 import kmsImage from '../assets/kms.png';
-import outlookImage from '../assets/outlook.png';
+import outlookIcon from '../assets/outlook.png';
+import googleIcon from '../assets/googleLogo.png';
 import { Eye, EyeOff } from 'lucide-react';
+import { registerUser } from '../api/authService';
+import { supabase } from '../lib/supabaseClient';
 
 export default function Register({ onNavigateToLogin }) {
   const [name, setName] = useState('');
@@ -12,17 +14,114 @@ export default function Register({ onNavigateToLogin }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    if (password !== confirmPassword) {
-      alert('Passwords do not match!');
+  // Password validation function
+  const validatePassword = (password) => {
+    const errors = [];
+    
+    if (password.length < 8) {
+      errors.push('at least 8 characters');
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.push('one uppercase letter');
+    }
+    if (!/[a-z]/.test(password)) {
+      errors.push('one lowercase letter');
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push('one number');
+    }
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+      errors.push('one special character');
+    }
+    
+    return errors;
+  };
+
+  // ============================
+  // GOOGLE LOGIN REGISTER
+  // ============================
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin }
+      });
+
+      if (error) {
+        console.error("Google login error:", error);
+        setError("Failed to sign up with Google.");
+        setLoading(false);
+      }
+
+    } catch (err) {
+      console.error(err);
+      setError("Google login failed.");
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setError('');
+    setSuccess('');
+
+    if (!name || !email || !password || !confirmPassword) {
+      setError('Please fill in all fields');
       return;
     }
-    console.log('Register attempt:', { name, email, password });
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      return;
+    }
+
+    // Validate password strength
+    const passwordErrors = validatePassword(password);
+    if (passwordErrors.length > 0) {
+      setError(`Password must contain ${passwordErrors.join(', ')}`);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { error: registerError } = await registerUser(email, password, name);
+
+      if (registerError) {
+        if (registerError.message.includes('already registered')) {
+          setError('This email is already registered. Please login instead.');
+        } else {
+          setError(registerError.message || 'Registration failed. Please try again.');
+        }
+        setLoading(false);
+        return;
+      }
+
+      setSuccess('Registration successful! Please check your email to verify your account.');
+
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+
+      setTimeout(() => {
+        onNavigateToLogin();
+      }, 3000);
+
+    } catch (err) {
+      console.error('Registration error:', err);
+      setError('Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOutlookRegister = () => {
-    console.log('Outlook register clicked');
+    alert('Outlook registration coming soon!');
   };
 
   return (
@@ -33,46 +132,73 @@ export default function Register({ onNavigateToLogin }) {
           <h1 className="register-title">Hello!</h1>
           <p className="register-subtitle">Let's Register Your Account</p>
 
+          {/* ERROR MESSAGE */}
+          {error && (
+            <div style={{
+              padding: '0.75rem',
+              backgroundColor: '#fee2e2',
+              color: '#991b1b',
+              borderRadius: '0.5rem',
+              marginBottom: '1rem',
+              fontSize: '0.875rem'
+            }}>
+              {error}
+            </div>
+          )}
+
+          {/* SUCCESS MESSAGE */}
+          {success && (
+            <div style={{
+              padding: '0.75rem',
+              backgroundColor: '#dcfce7',
+              color: '#166534',
+              borderRadius: '0.5rem',
+              marginBottom: '1rem',
+              fontSize: '0.875rem'
+            }}>
+              {success}
+            </div>
+          )}
+
           <div>
-            
+
+            {/* NAME */}
             <div className="form-group">
-              <label htmlFor="name" className="form-label">
-                Name
-              </label>
+              <label className="form-label">Name</label>
               <input
                 type="text"
-                id="name"
+                className="form-input"
+                placeholder="Enter your full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="form-input"
+                disabled={loading}
               />
             </div>
 
+            {/* EMAIL */}
             <div className="form-group">
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
+              <label className="form-label">Email</label>
               <input
                 type="email"
-                id="email"
+                className="form-input"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="form-input"
+                disabled={loading}
               />
             </div>
 
-            
+            {/* PASSWORD */}
             <div className="form-group">
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
+              <label className="form-label">Password</label>
               <div className="password-input-wrapper">
                 <input
                   type={showPassword ? "text" : "password"}
-                  id="password"
+                  className="form-input"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="form-input"
+                  disabled={loading}
                 />
                 <button
                   type="button"
@@ -84,18 +210,17 @@ export default function Register({ onNavigateToLogin }) {
               </div>
             </div>
 
-            
-            <div className="form-group-small">
-              <label htmlFor="confirmPassword" className="form-label">
-                Confirm Password
-              </label>
+            {/* CONFIRM PASSWORD */}
+            <div className="form-group">
+              <label className="form-label">Confirm Password</label>
               <div className="password-input-wrapper">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
-                  id="confirmPassword"
+                  className="form-input"
+                  placeholder="Re-enter your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="form-input"
+                  disabled={loading}
                 />
                 <button
                   type="button"
@@ -107,42 +232,61 @@ export default function Register({ onNavigateToLogin }) {
               </div>
             </div>
 
-           
-            <div className="forgot-password-wrapper">
-              <a href="#" className="forgot-password-link">
-                Forgot Password
-              </a>
-            </div>
-
-            
+            {/* MAIN REGISTER BUTTON */}
             <button
-              onClick={handleSubmit}
               className="btn btn-primary"
+              onClick={handleSubmit}
+              disabled={loading}
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
 
-            
+            {/* OUTLOOK BUTTON FIRST (matches Login.jsx) */}
             <button
-              onClick={handleOutlookRegister}
               className="btn btn-secondary"
+              onClick={handleOutlookRegister}
+              disabled={loading}
+              style={{ marginTop: "10px", marginBottom: "10px" }}
             >
-              <img src={outlookImage} alt="Outlook" className="outlook-icon" />
-              Sign in with Outlook
+              <img src={outlookIcon} alt="Outlook" className="outlook-icon" />
+              Sign up with Outlook
             </button>
 
-            
+            {/* GOOGLE BUTTON BELOW (matches Login.jsx) */}
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleGoogleLogin}
+              disabled={loading}
+              style={{ marginTop: "10px" }}
+            >
+              <img 
+                src={googleIcon} 
+                alt="Google" 
+                className="outlook-icon"
+                style={{ marginRight: "8px" }} 
+              />
+              Sign up with Google
+            </button>
+
+            {/* SIGN IN LINK */}
             <div className="signin-section">
               <span className="signin-text">Already have an account? </span>
-              <a href="#" onClick={(e) => { e.preventDefault(); onNavigateToLogin(); }} className="signin-link">
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); onNavigateToLogin(); }} 
+                className="signin-link"
+              >
                 Sign In
               </a>
             </div>
+
           </div>
+
         </div>
       </div>
 
-      
+      {/* IMAGE SECTION */}
       <div className="register-image-section">
         <img 
           src={kmsImage} 
@@ -150,6 +294,7 @@ export default function Register({ onNavigateToLogin }) {
           className="register-image"
         />
       </div>
+
     </div>
   );
 }

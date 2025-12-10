@@ -145,3 +145,68 @@
   background: rgba(0,0,0,0.45);
   z-index: 1500;
 }
+/* Logout Modal Styles */
+.logout-modal {
+  max-width: 350px;
+}
+
+.logout-modal-content {
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.logout-icon {
+  color: #f59e0b;
+  margin: 0 auto 0.75rem;
+  display: block;
+}
+
+.logout-modal-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  color: #111827;
+}
+
+.logout-confirm-btn {
+  background-color: #f59e0b;
+}
+
+.logout-confirm-btn:hover {
+  background-color: #d97706;
+}
+
+/* BRAND AREA */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;           /* space between logo & text */
+}
+
+.sidebar-logo {
+  height: 38px;        /* adjust size */
+  width: auto;
+  object-fit: contain;
+}
+
+/* KMS Text */
+.sidebar-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+}
+/* Fix spacing for dark mode toggle in sidebar */
+.sidebar-menu .dark-mode-toggle {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Ensure proper spacing between all sidebar items */
+.sidebar-item {
+  margin-bottom: 0.5rem;
+}
+
+/* Add extra space before logout */
+.sidebar-item.logout {
+  margin-top: 1rem;
+}
