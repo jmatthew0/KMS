@@ -1,145 +1,95 @@
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from "../lib/supabaseClient";
 
 // Register new user
 export const registerUser = async (email, password, fullName) => {
   try {
-    // Sign up the user
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: fullName
-        }
-      }
-    })
+      options: { data: { full_name: fullName } },
+    });
 
-    if (authError) throw authError
+    if (authError) throw authError;
 
-    // Wait a moment for auth user to be created
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    // Create profile only if user was created successfully
-    if (authData.user && authData.user.id) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: authData.user.id,
-          email: authData.user.email,
-          full_name: fullName,
-          role: 'user' // default role
-        })
-
-      // If profile insert fails, it might already exist - that's okay
-      if (profileError && !profileError.message.includes('duplicate')) {
-        console.error('Profile creation error:', profileError)
-      }
+    // Optional profile create (App.jsx also ensures profile exists)
+    if (authData.user?.id) {
+      await supabase.from("profiles").upsert({
+        id: authData.user.id,
+        email: authData.user.email,
+        full_name: fullName,
+        role: "user",
+        is_active: true,
+      });
     }
 
-    return { data: authData, error: null }
+    return { data: authData, error: null };
   } catch (error) {
-    return { data: null, error }
+    return { data: null, error };
   }
-}
+};
 
 // Login user
 export const loginUser = async (email, password) => {
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) throw error
-    return { data, error: null }
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return { data, error: null };
   } catch (error) {
-    return { data: null, error }
+    return { data: null, error };
   }
-}
+};
 
 // Logout user
 export const logoutUser = async () => {
   try {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-    return { error: null }
+    const { error } = await supabase.auth.signOut({ scope: "local" });
+    if (error) throw error;
+    return { error: null };
   } catch (error) {
-    return { error }
+    return { error };
   }
-}
+};
 
 // Get current user
 export const getCurrentUser = async () => {
   try {
-    const { data: { user }, error } = await supabase.auth.getUser()
-    if (error) throw error
-    return { user, error: null }
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) throw error;
+    return { user, error: null };
   } catch (error) {
-    return { user: null, error }
+    return { user: null, error };
   }
-}
+};
 
-// Get user profile with role
+// Get user profile
 export const getUserProfile = async (userId) => {
   try {
     const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
 
-    if (error) throw error
-    return { data, error: null }
+    if (error) throw error;
+    return { data, error: null };
   } catch (error) {
-    return { data: null, error }
+    return { data: null, error };
   }
-}
+};
 
 // Update user profile
 export const updateUserProfile = async (userId, updates) => {
   try {
     const { data, error } = await supabase
-      .from('profiles')
+      .from("profiles")
       .update(updates)
-      .eq('id', userId)
+      .eq("id", userId)
       .select()
-      .single()
+      .single();
 
-    if (error) throw error
-    return { data, error: null }
+    if (error) throw error;
+    return { data, error: null };
   } catch (error) {
-    return { data: null, error }
+    return { data: null, error };
   }
-}
-
-// Check if user is admin
-export const isAdmin = async (userId) => {
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', userId)
-      .single()
-
-    if (error) throw error
-    return data.role === 'admin'
-  } catch (error) {
-    return false
-  }
-}
-
-// Check if user is contributor or admin
-export const isContributor = async (userId) => {
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', userId)
-      .single()
-
-    if (error) throw error
-    return ['admin', 'contributor'].includes(data.role)
-  } catch (error) {
-    return false
-  }
-}
+};

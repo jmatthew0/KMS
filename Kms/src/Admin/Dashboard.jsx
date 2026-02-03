@@ -183,9 +183,10 @@ const Dashboard = () => {
       <div className="dashboard-section">
         <div className="section-header">
           <h2 className="section-title">Recent Documents</h2>
-          <button className="view-all-btn" onClick={() => window.location.reload()}>
+          <button className="view-all-btn" onClick={loadDashboardData}>
             Refresh
           </button>
+
         </div>
 
         <div className="documents-table">

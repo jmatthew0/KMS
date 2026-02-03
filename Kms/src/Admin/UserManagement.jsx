@@ -9,6 +9,8 @@ const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showActionMenu, setShowActionMenu] = useState(null);
   const [users, setUsers] = useState([]);
@@ -25,6 +27,22 @@ const UserManagement = () => {
   useEffect(() => {
     loadUsers();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showSortDropdown && !event.target.closest('.sort-dropdown-container')) {
+        setShowSortDropdown(false);
+      }
+      if (showActionMenu && !event.target.closest('.action-menu-wrapper')) {
+        setShowActionMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSortDropdown, showActionMenu]);
 
   const loadUsers = async () => {
     setLoading(true);
@@ -74,6 +92,21 @@ const UserManagement = () => {
     const matchesRole = filterRole === 'all' || user.role === filterRole;
     const matchesStatus = filterStatus === 'all' || user.status === filterStatus;
     return matchesSearch && matchesRole && matchesStatus;
+  }).sort((a, b) => {
+    switch(sortBy) {
+      case 'newest':
+        return new Date(b.joined) - new Date(a.joined);
+      case 'oldest':
+        return new Date(a.joined) - new Date(b.joined);
+      case 'name-asc':
+        return a.name.localeCompare(b.name);
+      case 'name-desc':
+        return b.name.localeCompare(a.name);
+      case 'recent-active':
+        return new Date(b.lastActive) - new Date(a.lastActive);
+      default:
+        return 0;
+    }
   });
 
   const handleDeleteUser = async (userId) => {
@@ -276,7 +309,123 @@ const UserManagement = () => {
           </div>
 
           <div className="filter-group">
-            <Filter size={20} />
+            <div style={{ position: 'relative' }} className="sort-dropdown-container">
+              <button
+                onClick={() => setShowSortDropdown(!showSortDropdown)}
+                style={{
+                  padding: '0.5rem',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-primary, #1f2937)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                <Filter size={20} />
+              </button>
+              
+              {showSortDropdown && (
+                <div className="action-dropdown" style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  marginTop: '0.5rem',
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
+                  zIndex: 50,
+                  minWidth: '200px'
+                }}>
+                  <button
+                    onClick={() => {
+                      setSortBy('newest');
+                      setShowSortDropdown(false);
+                    }}
+                    className="action-item"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      opacity: sortBy === 'newest' ? 0.7 : 1
+                    }}
+                  >
+                    Newest Users
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortBy('oldest');
+                      setShowSortDropdown(false);
+                    }}
+                    className="action-item"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      opacity: sortBy === 'oldest' ? 0.7 : 1
+                    }}
+                  >
+                    Oldest Users
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortBy('name-asc');
+                      setShowSortDropdown(false);
+                    }}
+                    className="action-item"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      opacity: sortBy === 'name-asc' ? 0.7 : 1
+                    }}
+                  >
+                    Name (A-Z)
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortBy('name-desc');
+                      setShowSortDropdown(false);
+                    }}
+                    className="action-item"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      opacity: sortBy === 'name-desc' ? 0.7 : 1
+                    }}
+                  >
+                    Name (Z-A)
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortBy('recent-active');
+                      setShowSortDropdown(false);
+                    }}
+                    className="action-item"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      opacity: sortBy === 'recent-active' ? 0.7 : 1
+                    }}
+                  >
+                    Recently Active
+                  </button>
+                </div>
+              )}
+            </div>
+
             <select
               value={filterRole}
               onChange={(e) => setFilterRole(e.target.value)}

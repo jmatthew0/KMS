@@ -99,28 +99,31 @@ const Analytics = () => {
       setMostDownloadedDocs(downloadedDocs);
 
       // Newly added documents - get user info for authors
-      const recentDocs = await Promise.all(
-        docsArray.slice(0, 5).map(async (doc) => {
-          let authorName = 'Unknown';
-          
-          if (doc.created_by) {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('full_name, email')
-              .eq('id', doc.created_by)
-              .single();
-            
-            authorName = profile?.full_name || profile?.email?.split('@')[0] || 'Unknown';
-          }
+      const recent = docsArray.slice(0, 5);
 
-          return {
-            id: doc.id,
-            title: doc.title || 'Untitled',
-            created_at: doc.created_at,
-            user: { full_name: authorName }
-          };
-        })
-      );
+const authorIds = [...new Set(recent.map(d => d.created_by).filter(Boolean))];
+
+let authorMap = {};
+if (authorIds.length) {
+  const { data: authors } = await supabase
+    .from("profiles")
+    .select("id, full_name, email")
+    .in("id", authorIds);
+
+  (authors || []).forEach(a => {
+    authorMap[a.id] = a.full_name || (a.email ? a.email.split("@")[0] : "Unknown");
+  });
+}
+
+const recentDocs = recent.map(doc => ({
+  id: doc.id,
+  title: doc.title || "Untitled",
+  created_at: doc.created_at,
+  user: { full_name: authorMap[doc.created_by] || "Unknown" }
+}));
+
+setNewlyAddedDocs(recentDocs);
+
       setNewlyAddedDocs(recentDocs);
 
       // Calculate upload trends

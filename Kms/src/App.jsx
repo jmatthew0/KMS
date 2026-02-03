@@ -1,193 +1,316 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useCallback, useRef } from "react";
+import { Routes, Route, Navigate, Outlet, useNavigate, useLocation } from "react-router-dom";
 
-import Login from './Components/Login';
-import Register from './Components/Register';
-import ResetPassword from './Components/ResetPassword';
-import Navbar from './Components/Navbar';
-import Home from './Components/Home';
-import DocumentsPortal from './Components/DocumentsPortal';
-import FAQs from './Components/FAQs';
-import Profile from './Components/Profile';
+import Login from "./Components/Login";
+import Register from "./Components/Register";
+import ResetPassword from "./Components/ResetPassword";
+import Navbar from "./Components/Navbar";
+import Home from "./Components/Home";
+import DocumentsPortal from "./Components/DocumentsPortal";
+import FAQs from "./Components/FAQs";
+import Profile from "./Components/Profile";
+import KMSChatWidget from "./Components/KMSChatWidget";
 
 // Admin pages
-import Sidebar from './Admin/Sidebar';
-import Dashboard from './Admin/Dashboard';
-import Analytics from './Admin/Analytics';
-import UserManagement from './Admin/UserManagement';
-import ManageFAQs from './Admin/ManageFaqs';
-import PendingApproval from './Admin/PendingApproval';   // ✅ ADDED
+import Sidebar from "./Admin/Sidebar";
+import Dashboard from "./Admin/Dashboard";
+import Analytics from "./Admin/Analytics";
+import UserManagement from "./Admin/UserManagement";
+import ManageFAQs from "./Admin/ManageFaqs";
+import PendingApproval from "./Admin/PendingApproval";
 
-import { supabase } from './lib/supabaseClient';
-import { DarkModeProvider } from './context/DarkModeContext.jsx';
-import './Css/DarkMode.css';
+import { supabase } from "./lib/supabaseClient";
+import { DarkModeProvider } from "./context/DarkModeContext.jsx";
+import { useAuth } from "./context/AuthContext";
+import ProtectedRoute from "./ProtectedRoute";
 
-function App() {
-  const [currentPage, setCurrentPage] = useState('login');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState(null);
-  const [loading, setLoading] = useState(true);
+import "./Css/DarkMode.css";
 
-  useEffect(() => {
-    document.body.classList.add('preload');
-    setTimeout(() => document.body.classList.remove('preload'), 100);
-
-    const hash = window.location.hash;
-
-    if (hash && hash.includes('type=recovery')) {
-      setCurrentPage('reset-password');
-      setIsAuthenticated(false);
-      setLoading(false);
-      return;
-    }
-
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const storedRole = localStorage.getItem('userRole');
-
-      if (session?.user) {
-        const user = session.user;
-
-        localStorage.setItem('userId', user.id);
-        localStorage.setItem('userEmail', user.email);
-        localStorage.setItem('userName', user.user_metadata?.full_name || user.email);
-
-        const role = storedRole || 'user';
-        localStorage.setItem('userRole', role);
-
-        setIsAuthenticated(true);
-        setUserRole(role);
-        setCurrentPage(role === 'admin' ? 'dashboard' : 'home');
-      } else {
-        setIsAuthenticated(false);
-        setCurrentPage('login');
-      }
-
-    } catch (err) {
-      console.error('Error checking auth:', err);
-      setIsAuthenticated(false);
-      setCurrentPage('login');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLoginSuccess = (role) => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        localStorage.setItem('userId', session.user.id);
-        localStorage.setItem('userEmail', session.user.email);
-        localStorage.setItem('userName', session.user.user_metadata?.full_name || session.user.email);
-      }
-    });
-
-    localStorage.setItem('userRole', role);
-    setIsAuthenticated(true);
-    setUserRole(role);
-
-    setCurrentPage(role === 'admin' ? 'dashboard' : 'home');
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    localStorage.clear();
-    setIsAuthenticated(false);
-    setUserRole(null);
-    setCurrentPage('login');
-  };
-
-  const handleNavigate = (page) => {
-    setCurrentPage(page);
-  };
-
-  if (loading) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{
-            display: 'inline-block',
-            width: '48px',
-            height: '48px',
-            border: '4px solid #f3f4f6',
-            borderTopColor: '#2563eb',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite'
-          }} />
-          <p style={{ marginTop: '1rem', color: '#6b7280' }}>Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
+/** ✅ Loader UI */
+function FullPageLoader() {
   return (
-    <DarkModeProvider>
-      {!isAuthenticated ? (
-        <>
-          {currentPage === 'login' && (
-            <Login 
-              onNavigateToRegister={() => setCurrentPage('register')} 
-              onLoginSuccess={handleLoginSuccess}
-            />
-          )}
-
-          {currentPage === 'register' && (
-            <Register onNavigateToLogin={() => setCurrentPage('login')} />
-          )}
-
-          {currentPage === 'reset-password' && (
-            <ResetPassword onNavigateToLogin={() => setCurrentPage('login')} />
-          )}
-        </>
-      ) : (
-        <>
-          {userRole === 'admin' ? (
-            <div style={{ display: 'flex' }}>
-              {/* Sidebar */}
-              <Sidebar
-                currentPage={currentPage}
-                onNavigate={handleNavigate}
-                onLogout={handleLogout}
-              />
-
-              {/* Admin Content */}
-              <div style={{ flex: 1, overflowY: 'auto' }}>
-                {currentPage === 'dashboard' && <Dashboard />}
-                {currentPage === 'analytics' && <Analytics />}
-                {currentPage === 'user-management' && <UserManagement />}
-                {currentPage === 'manage-faqs' && <ManageFAQs />}
-                {currentPage === 'pending-approval' && <PendingApproval />} {/* ✅ NEW */}
-              </div>
-            </div>
-          ) : (
-            <>
-              {/* User Navbar */}
-              <Navbar
-                currentPage={currentPage}
-                onNavigate={handleNavigate}
-                onLogout={handleLogout}
-              />
-
-              {/* User Content */}
-              {currentPage === 'home' && (
-                <Home onNavigateToDocuments={() => handleNavigate('documents')} />
-              )}
-              {currentPage === 'documents' && <DocumentsPortal />}
-              {currentPage === 'faqs' && <FAQs />}
-              {currentPage === 'profile' && <Profile />}
-            </>
-          )}
-        </>
-      )}
-    </DarkModeProvider>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+      <div style={{ textAlign: "center" }}>
+        <div
+          style={{
+            display: "inline-block",
+            width: "48px",
+            height: "48px",
+            border: "4px solid #f3f4f6",
+            borderTopColor: "#2563eb",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+          }}
+        />
+        <p style={{ marginTop: "1rem", color: "#6b7280" }}>Loading...</p>
+      </div>
+    </div>
   );
 }
 
-export default App;
+/** ✅ Role Guard */
+function RequireRole({ userRole, allowed = [] }) {
+  if (!allowed.includes(userRole)) {
+    return <Navigate to={userRole === "admin" ? "/admin/dashboard" : "/home"} replace />;
+  }
+  return <Outlet />;
+}
+
+/** ✅ Layout: User pages */
+function UserLayout({ onLogout }) {
+  return (
+    <>
+      <Navbar onLogout={onLogout} />
+      <Outlet />
+    </>
+  );
+}
+
+/** ✅ Layout: Admin pages */
+function AdminLayout({ onLogout }) {
+  return (
+    <div style={{ display: "flex" }}>
+      <Sidebar onLogout={onLogout} />
+      <div style={{ flex: 1, overflowY: "auto" }}>
+        <Outlet />
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const { session, authLoading } = useAuth();
+
+  const [userRole, setUserRole] = useState(null);
+  const [roleLoading, setRoleLoading] = useState(true);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const lastUserIdRef = useRef(null);
+
+  const hardClearLocal = useCallback(() => {
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+  }, []);
+
+  const setLocalSession = useCallback((user, role) => {
+    localStorage.setItem("userId", user.id);
+    localStorage.setItem("userEmail", user.email || "");
+    localStorage.setItem(
+      "userName",
+      user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.email?.split("@")[0] ||
+        ""
+    );
+    localStorage.setItem("userRole", role);
+  }, []);
+
+  const handleLogout = useCallback(async () => {
+    try {
+      await supabase.auth.signOut({ scope: "local" });
+    } catch (e) {
+      console.warn("⚠️ signOut issue:", e?.message || e);
+    } finally {
+      hardClearLocal();
+      setUserRole(null);
+      setRoleLoading(false);
+      navigate("/login", { replace: true });
+    }
+  }, [hardClearLocal, navigate]);
+
+  const ensureProfileExists = useCallback(async (user) => {
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.warn("⚠️ ensureProfileExists fetch error:", error);
+      return;
+    }
+
+    if (!profile) {
+      const { error: insertErr } = await supabase.from("profiles").insert({
+        id: user.id,
+        email: user.email,
+        full_name:
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name ||
+          user.email?.split("@")[0] ||
+          "",
+        role: "user",
+        avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || "",
+        is_active: true,
+      });
+
+      if (insertErr) console.warn("⚠️ ensureProfileExists insert error:", insertErr);
+    }
+  }, []);
+
+  const fetchRoleFromProfiles = useCallback(async (userId) => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("role, is_active")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (error) {
+      console.warn("⚠️ Profile fetch error (likely RLS):", error);
+      // ✅ don’t block forever; default to user if cannot read
+      return { role: "user", isActive: true };
+    }
+
+    return {
+      role: data?.role || "user",
+      isActive: data?.is_active !== false,
+    };
+  }, []);
+
+  // ✅ Load role whenever session changes
+  useEffect(() => {
+    // If auth is still restoring session, wait
+    if (authLoading) return;
+
+    // No session => logged out
+    if (!session?.user) {
+      hardClearLocal();
+      setUserRole(null);
+      setRoleLoading(false);
+
+      // If on protected route, push to login
+      const publicRoutes = ["/", "/login", "/register", "/reset-password"];
+      if (!publicRoutes.includes(location.pathname)) {
+        navigate("/login", { replace: true });
+      }
+      return;
+    }
+
+    const user = session.user;
+
+    // prevent repeated loads
+    if (lastUserIdRef.current === user.id) {
+      setRoleLoading(false);
+      return;
+    }
+    lastUserIdRef.current = user.id;
+
+    setRoleLoading(true);
+
+    // ✅ Safety timeout so role loading can NEVER be infinite
+    const safety = setTimeout(() => {
+      console.warn("⚠️ Role loading stuck — defaulting to user");
+      setUserRole("user");
+      setRoleLoading(false);
+    }, 5000);
+
+    (async () => {
+      try {
+        // fast cached role
+        const cachedRole = localStorage.getItem("userRole");
+        const cachedUserId = localStorage.getItem("userId");
+        if (cachedRole && cachedUserId === user.id) {
+          setUserRole(cachedRole);
+        }
+
+        await ensureProfileExists(user);
+
+        const { role, isActive } = await fetchRoleFromProfiles(user.id);
+
+        if (!isActive) {
+          await handleLogout();
+          return;
+        }
+
+        setLocalSession(user, role);
+        setUserRole(role);
+
+        // redirect from public pages only
+        const publicRoutes = ["/", "/login", "/register", "/reset-password"];
+        if (publicRoutes.includes(location.pathname)) {
+          navigate(role === "admin" ? "/admin/dashboard" : "/home", { replace: true });
+        }
+      } catch (e) {
+        console.warn("role load exception:", e);
+        setUserRole("user");
+      } finally {
+        clearTimeout(safety);
+        setRoleLoading(false);
+      }
+    })();
+
+    return () => clearTimeout(safety);
+  }, [
+    authLoading,
+    session,
+    location.pathname,
+    navigate,
+    hardClearLocal,
+    ensureProfileExists,
+    fetchRoleFromProfiles,
+    setLocalSession,
+    handleLogout,
+  ]);
+
+  const isReady = !authLoading && !roleLoading;
+  const isLoggedIn = !!session?.user;
+
+  return (
+    <DarkModeProvider>
+      <Routes>
+        {/* Root */}
+        <Route
+          path="/"
+          element={
+            !isReady ? (
+              <FullPageLoader />
+            ) : isLoggedIn ? (
+              <Navigate to={userRole === "admin" ? "/admin/dashboard" : "/home"} replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* Public */}
+        <Route path="/login" element={<Login onNavigateToRegister={() => navigate("/register")} />} />
+        <Route path="/register" element={<Register onNavigateToLogin={() => navigate("/login")} />} />
+        <Route path="/reset-password" element={<ResetPassword onNavigateToLogin={() => navigate("/login")} />} />
+
+        {/* Protected */}
+        <Route element={<ProtectedRoute />}>
+          {/* USER */}
+          <Route element={<RequireRole userRole={userRole} allowed={["user"]} />}>
+            <Route element={<UserLayout onLogout={handleLogout} />}>
+              <Route path="/home" element={<Home onNavigateToDocuments={() => navigate("/documents")} />} />
+              <Route path="/documents" element={<DocumentsPortal />} />
+              <Route path="/faqs" element={<FAQs />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
+          </Route>
+
+          {/* ADMIN */}
+          <Route element={<RequireRole userRole={userRole} allowed={["admin"]} />}>
+            <Route path="/admin" element={<AdminLayout onLogout={handleLogout} />}>
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="user-management" element={<UserManagement />} />
+              <Route path="manage-faqs" element={<ManageFAQs />} />
+              <Route path="pending-approval" element={<PendingApproval />} />
+            </Route>
+          </Route>
+        </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+
+      {isLoggedIn && <KMSChatWidget />}
+    </DarkModeProvider>
+  );
+}

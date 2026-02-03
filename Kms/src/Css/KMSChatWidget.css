@@ -1,0 +1,415 @@
+/* KMS Chat Widget Styles */
+
+/* Chat Button */
+.kms-chat-button {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background-color: #2563eb;
+    color: white;
+    border-radius: 50%;
+    padding: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 50;
+  }
+  
+  .kms-chat-button:hover {
+    background-color: #1d4ed8;
+    transform: scale(1.1);
+  }
+  
+  /* Chat Window */
+  .kms-chat-window {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 384px;
+    height: 600px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+    border: 1px solid #e5e7eb;
+  }
+
+  
+  
+  /* Dark mode support */
+  .dark .kms-chat-window {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+  
+  /* Header */
+  .kms-chat-header {
+    background-color: #2563eb;
+    color: white;
+    padding: 16px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .kms-chat-header-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .kms-chat-title {
+    font-weight: 600;
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .kms-chat-subtitle {
+    font-size: 12px;
+    color: #bfdbfe;
+    margin: 0;
+  }
+  
+  .kms-chat-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .kms-chat-close:hover {
+    background-color: #1d4ed8;
+  }
+  
+  /* Messages Container */
+  .kms-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    background-color: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .dark .kms-chat-messages {
+    background-color: #111827;
+  }
+  
+  /* Message Row */
+  .kms-message-row {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .kms-message-row.user {
+    justify-content: flex-end;
+  }
+  
+  .kms-message-row.assistant {
+    justify-content: flex-start;
+  }
+  
+  /* Avatar */
+  .kms-avatar {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .kms-avatar.bot {
+    background-color: #2563eb;
+  }
+  
+  .kms-avatar.user {
+    background-color: #4b5563;
+  }
+  
+  /* Message Bubble */
+  .kms-message-content {
+    max-width: 80%;
+  }
+  
+  .kms-message-row.user .kms-message-content {
+    order: -1;
+  }
+  
+  .kms-message-bubble {
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  
+  .kms-message-bubble p {
+    margin: 0;
+    color: inherit;
+  }
+  
+  .kms-message-bubble.user {
+    background-color: #2563eb;
+    color: white !important;
+  }
+  
+  .kms-message-bubble.user p {
+    color: white !important;
+  }
+  
+  .kms-message-bubble.assistant {
+    background-color: white;
+    color: #1f2937;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .kms-message-bubble.assistant p {
+    color: #1f2937;
+  }
+  
+  .dark .kms-message-bubble.assistant {
+    background-color: #374151;
+    color: #f3f4f6 !important;
+    border-color: #4b5563;
+  }
+  
+  .dark .kms-message-bubble.assistant p {
+    color: #f3f4f6 !important;
+  }
+  
+  /* Sources */
+  .kms-message-sources {
+    margin-top: 8px;
+    padding: 8px;
+    background-color: #eff6ff;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  
+  .dark .kms-message-sources {
+    background-color: #374151;
+  }
+  
+  .kms-message-sources p {
+    margin: 0 0 4px 0;
+    font-weight: 600;
+    color: #1e40af;
+  }
+  
+  .dark .kms-message-sources p {
+    color: #93c5fd;
+  }
+  
+  .kms-message-sources div {
+    color: #1d4ed8;
+    margin: 2px 0;
+  }
+  
+  .dark .kms-message-sources div {
+    color: #93c5fd;
+  }
+  
+  /* Loading */
+  .kms-loading {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+  
+  .kms-loading-bubble {
+    background-color: white;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .dark .kms-loading-bubble {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+  
+  /* Input Area */
+  .kms-chat-input-area {
+    padding: 16px;
+    border-top: 1px solid #e5e7eb;
+    background-color: white;
+  }
+  
+  .dark .kms-chat-input-area {
+    border-color: #374151;
+    background-color: #1f2937;
+  }
+  
+  .kms-input-wrapper {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .kms-input {
+    flex: 1;
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    background-color: white;
+    color: #1f2937;
+  }
+  
+  .kms-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+  
+  .dark .kms-input {
+    background-color: #111827;
+    border-color: #4b5563;
+    color: #e5e7eb;
+  }
+  
+  .kms-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .kms-send-button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .kms-send-button:hover:not(:disabled) {
+    background-color: #1d4ed8;
+  }
+  
+  .kms-send-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  .kms-input-hint {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 8px;
+  }
+  
+  .dark .kms-input-hint {
+    color: #9ca3af;
+  }
+  
+  /* Scrollbar styling */
+  .kms-chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .kms-chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .kms-chat-messages::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+  }
+  
+  .dark .kms-chat-messages::-webkit-scrollbar-thumb {
+    background: #4b5563;
+  }
+  
+  /* Responsive */
+  @media (max-width: 640px) {
+    .kms-chat-window {
+      width: calc(100vw - 32px);
+      height: calc(100vh - 32px);
+      bottom: 16px;
+      right: 16px;
+    }
+    
+    .kms-chat-button {
+      bottom: 16px;
+      right: 16px;
+    }
+  }
+  
+  /* Animation */
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  /* Dark Mode Specific Styles */
+.kms-chat-window.dark-mode {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+  
+  .kms-chat-window.dark-mode .kms-chat-messages {
+    background-color: #111827;
+  }
+  
+  .kms-chat-window.dark-mode .kms-message-bubble.assistant {
+    background-color: #4b5563;
+    color: #ffffff !important;
+    border-color: #6b7280;
+  }
+  
+  .kms-chat-window.dark-mode .kms-message-bubble.assistant p {
+    color: #ffffff !important;
+  }
+  
+  .kms-chat-window.dark-mode .kms-message-sources {
+    background-color: #374151;
+  }
+  
+  .kms-chat-window.dark-mode .kms-message-sources p {
+    color: #93c5fd;
+  }
+  
+  .kms-chat-window.dark-mode .kms-message-sources div {
+    color: #bfdbfe;
+  }
+  
+  .kms-chat-window.dark-mode .kms-chat-input-area {
+    border-color: #374151;
+    background-color: #1f2937;
+  }
+  
+  .kms-chat-window.dark-mode .kms-input {
+    background-color: #111827;
+    border-color: #4b5563;
+    color: #f3f4f6;
+  }
+  
+  .kms-chat-window.dark-mode .kms-input-hint {
+    color: #9ca3af;
+  }
+  
+  .kms-chat-window.dark-mode .kms-loading-bubble {
+    background-color: #1f2937;
+    border-color: #374151;
+  }

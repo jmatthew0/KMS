@@ -7,15 +7,18 @@ import {
   LogOut,
   Menu,
   FileText,
-  Clock3
+  Clock3,
 } from "lucide-react";
+
+import { NavLink, useNavigate } from "react-router-dom";
 
 import IPOPHLLogo from "../assets/IPOPHL logo.png";
 import DarkModeToggle from "../Components/DarkModeToggle";
 
-export default function Sidebar({ currentPage, onNavigate, onLogout }) {
+export default function Sidebar({ onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();
 
   // Close sidebar when clicking outside
   useEffect(() => {
@@ -33,24 +36,22 @@ export default function Sidebar({ currentPage, onNavigate, onLogout }) {
   }, [isOpen]);
 
   const menuItems = [
-    { label: "Dashboard", icon: LayoutDashboard, page: "dashboard" },
-    { label: "Analytics", icon: BarChart2, page: "analytics" },
-    { label: "User Management", icon: Users, page: "user-management" },
-    { label: "Manage FAQs", icon: FileText, page: "manage-faqs" },
-
-    // NEW — Pending Approvals (Admin Only)
-    { label: "Pending Approvals", icon: Clock3, page: "pending-approval" },
+    { label: "Dashboard", icon: LayoutDashboard, to: "/admin/dashboard" },
+    { label: "Analytics", icon: BarChart2, to: "/admin/analytics" },
+    { label: "User Management", icon: Users, to: "/admin/user-management" },
+    { label: "Manage FAQs", icon: FileText, to: "/admin/manage-faqs" },
+    { label: "Pending Approvals", icon: Clock3, to: "/admin/pending-approval" },
   ];
 
   const handleLogoutClick = () => {
     setShowLogoutModal(true);
   };
 
-  const confirmLogout = () => {
+  const confirmLogout = async () => {
     setShowLogoutModal(false);
-    setIsOpen(false);
-    onLogout();
+    await onLogout();
   };
+  
 
   return (
     <>
@@ -60,14 +61,20 @@ export default function Sidebar({ currentPage, onNavigate, onLogout }) {
       </button>
 
       {/* Dark overlay */}
-      {isOpen && <div className="sidebar-overlay"></div>}
+      {isOpen && <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />}
 
       {/* Sidebar Drawer */}
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
-        
         {/* BRAND AREA */}
         <div className="sidebar-header">
-          <div className="sidebar-brand">
+          <div
+            className="sidebar-brand"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              navigate("/admin/dashboard");
+              setIsOpen(false);
+            }}
+          >
             <img src={IPOPHLLogo} alt="IPOPHL" className="sidebar-logo" />
             <h2 className="sidebar-title">KMS</h2>
           </div>
@@ -76,19 +83,18 @@ export default function Sidebar({ currentPage, onNavigate, onLogout }) {
         {/* MENU SECTION */}
         <nav className="sidebar-menu">
           {menuItems.map((item) => (
-            <button
-              key={item.page}
-              className={`sidebar-item ${
-                currentPage === item.page ? "active" : ""
-              }`}
-              onClick={() => {
-                onNavigate(item.page);
-                setIsOpen(false);
-              }}
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `sidebar-item ${isActive ? "active" : ""}`
+              }
+              onClick={() => setIsOpen(false)}
+              end
             >
               <item.icon size={20} className="sidebar-icon" />
               <span>{item.label}</span>
-            </button>
+            </NavLink>
           ))}
 
           <div className="push-down"></div>

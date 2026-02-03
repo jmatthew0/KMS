@@ -1,75 +1,68 @@
-import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
-import { supabase } from '../lib/supabaseClient';
-import '../Css/Login.css';
-import kmsImage from '../assets/kms.png';
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { supabase } from "../lib/supabaseClient";
+import "../Css/Login.css";
+import kmsImage from "../assets/kms.png";
 
 const ResetPassword = ({ onNavigateToLogin }) => {
-  const [formData, setFormData] = useState({
-    newPassword: '',
-    confirmPassword: ''
-  });
+  const [formData, setFormData] = useState({ newPassword: "", confirmPassword: "" });
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-    setError('');
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
-      // Validation
+      // ✅ Confirm token is present (very important)
+      const hash = window.location.hash || "";
+      console.log("RESET HASH:", hash);
+
+      if (!hash.includes("type=recovery") && !hash.includes("access_token=")) {
+        throw new Error(
+          "Reset link is missing/expired. Please go back to Login and request a new reset link."
+        );
+      }
+
       if (!formData.newPassword || !formData.confirmPassword) {
-        setError('Please fill in all fields');
-        setLoading(false);
-        return;
+        throw new Error("Please fill in all fields");
       }
 
       if (formData.newPassword !== formData.confirmPassword) {
-        setError('Passwords do not match');
-        setLoading(false);
-        return;
+        throw new Error("Passwords do not match");
       }
 
       if (formData.newPassword.length < 6) {
-        setError('Password must be at least 6 characters');
-        setLoading(false);
-        return;
+        throw new Error("Password must be at least 6 characters");
       }
 
-      // Update password
+      // ✅ Update password
       const { error: updateError } = await supabase.auth.updateUser({
-        password: formData.newPassword
+        password: formData.newPassword,
       });
 
       if (updateError) {
-        setError(updateError.message);
-        setLoading(false);
-        return;
+        console.error("updateUser error:", updateError);
+        throw new Error(updateError.message || "Failed to update password.");
       }
 
-      // Success
-      alert('Password updated successfully! Please login with your new password.');
-      
-      // Clear the URL hash
-      window.history.replaceState(null, '', window.location.pathname);
-      
-      // Navigate to login
-      onNavigateToLogin();
+      alert("Password updated successfully! Please login with your new password.");
 
+      // ✅ clear hash ONLY AFTER success
+      window.history.replaceState(null, "", window.location.pathname);
+
+      onNavigateToLogin();
     } catch (err) {
-      console.error('Password reset error:', err);
-      setError('Failed to update password. Please try again.');
+      console.error("Password reset error:", err);
+      setError(err.message || "Failed to update password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -82,17 +75,11 @@ const ResetPassword = ({ onNavigateToLogin }) => {
           <h1 className="login-title">Reset Your Password</h1>
           <p className="login-subtitle">Enter your new password below</p>
 
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
+          {error && <div className="error-message">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label" htmlFor="newPassword">
-                New Password
-              </label>
+              <label className="form-label" htmlFor="newPassword">New Password</label>
               <div className="password-input-wrapper">
                 <input
                   id="newPassword"
@@ -117,9 +104,7 @@ const ResetPassword = ({ onNavigateToLogin }) => {
             </div>
 
             <div className="form-group">
-              <label className="form-label" htmlFor="confirmPassword">
-                Confirm Password
-              </label>
+              <label className="form-label" htmlFor="confirmPassword">Confirm Password</label>
               <div className="password-input-wrapper">
                 <input
                   id="confirmPassword"
@@ -143,15 +128,11 @@ const ResetPassword = ({ onNavigateToLogin }) => {
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              className="btn btn-primary"
-              disabled={loading}
-            >
-              {loading ? 'Updating...' : 'Update Password'}
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? "Updating..." : "Update Password"}
             </button>
 
-            <button 
+            <button
               type="button"
               onClick={onNavigateToLogin}
               className="btn btn-secondary back-to-login-btn"
