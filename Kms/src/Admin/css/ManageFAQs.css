@@ -1,3 +1,6 @@
+/* ===========================================================
+   ManageFAQs Layout
+=========================================================== */
 .managefaqs-container {
   padding: 2rem;
   padding-left: 300px; /* Match Pending Approval */
@@ -10,408 +13,432 @@
   margin: 0 auto;
 }
 
-  
-  /* Header */
-  .managefaqs-header {
-    margin-bottom: 2rem;
+/* Responsive: remove sidebar offset */
+@media (max-width: 1024px) {
+  .managefaqs-container {
+    padding-left: 0;
   }
-  
-  .page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin: 0 0 0.5rem 0;
-  }
-  
-  .page-subtitle {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin: 0;
-  }
-  
-  /* Submission Cards */
+}
+
+/* ===========================================================
+   Header
+=========================================================== */
+.managefaqs-header {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ===========================================================
+   Error Box
+=========================================================== */
+.error-box {
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ===========================================================
+   Tabs
+=========================================================== */
+.tabs-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tab-button {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  margin-bottom: -2px;
+}
+
+.tab-button:hover {
+  color: #2563eb;
+  background-color: #f9fafb;
+}
+
+.tab-button.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+/* ===========================================================
+   Cards / Grid
+=========================================================== */
+.submissions-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1rem;
+  max-width: 1400px;
+}
+
+@media (max-width: 1024px) {
   .submissions-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1rem;
-    max-width: 1400px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
-  
-  .submission-card {
-    background: white;
-    padding: 1.5rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.2s;
-  }
-  
-  .submission-card:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .submission-question {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 0.5rem;
-  }
-  
-  .submission-meta,
-  .submission-date {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin: 0.25rem 0;
-  }
-  
-  .review-btn {
-    margin-top: 1rem;
-    padding: 0.5rem 1.25rem;
-    background-color: #2563eb;
-    color: white;
-    font-size: 0.875rem;
-    font-weight: 600;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .review-btn:hover {
-    background-color: #1e4fc5;
-  }
-  
-  .delete-btn {
-    margin-top: 1rem;
-    padding: 0.5rem 1.25rem;
-    background-color: #ef4444;
-    color: white;
-    font-size: 0.875rem;
-    font-weight: 600;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .delete-btn:hover {
-    background-color: #dc2626;
-  }
-  
-  .view-btn {
-    padding: 0.5rem 1.25rem;
-    background-color: #6b7280;
-    color: white;
-    font-size: 0.875rem;
-    font-weight: 600;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .view-btn:hover {
-    background-color: #4b5563;
-  }
-  
-  .card-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  
-  .view-text {
-    padding: 0.75rem;
-    background-color: #f9fafb;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
-    color: #374151;
-    margin: 0;
-  }
-  
-  /* Tabs */
-  .tabs-container {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid #e5e7eb;
-  }
-  
-  .tab-button {
-    padding: 0.75rem 1.5rem;
-    background: transparent;
-    border: none;
-    border-bottom: 3px solid transparent;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #6b7280;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.2s;
-    margin-bottom: -2px;
-  }
-  
-  .tab-button:hover {
-    color: #2563eb;
-    background-color: #f9fafb;
-  }
-  
-  .tab-button.active {
-    color: #2563eb;
-    border-bottom-color: #2563eb;
-  }
-  
-  .cancel-btn {
-    padding: 0.5rem 1rem;
-    background-color: #f3f4f6;
-    color: #374151;
-    font-size: 0.875rem;
-    font-weight: 600;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .cancel-btn:hover {
-    background-color: #e5e7eb;
-  }
-  
-  .delete-confirm-btn {
-    padding: 0.5rem 1rem;
-    background-color: #ef4444;
-    color: white;
-    font-size: 0.875rem;
-    font-weight: 600;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .delete-confirm-btn:hover {
-    background-color: #dc2626;
-  }
-  
-  /* Empty State */
-  .empty-state {
-    text-align: center;
-    color: #6b7280;
-    padding: 3rem 1rem;
-  }
-  
-  .empty-icon {
-    opacity: 0.4;
-    margin-bottom: 1rem;
-  }
-  
-  /* Loading State */
-  .loading-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 4rem;
-  }
-  
-  .spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid #e5e7eb;
-    border-top-color: #2563eb;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
-  /* ------------------------------------------------ */
-  /* FIXED MODAL — SAME DESIGN, WIDER, NO OVERLAP    */
-  /* ------------------------------------------------ */
-  
-  .managefaqs-container .faq-modal-overlay {
-    position: fixed !important;
-    inset: 0 !important;
-    background: rgba(0, 0, 0, 0.5) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 1rem !important;
-    z-index: 99999 !important;
-  }
-  
-  .managefaqs-container .faq-modal-content {
-    background: white !important;
-    width: 100% !important;
-    max-width: 480px !important;      /* WIDER MODAL */
-    border-radius: 0.75rem !important;
-    padding: 1.5rem !important;
-    max-height: 85vh !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15) !important;
-    box-sizing: border-box !important;
-  }
-  
-  /* Ensure inner layout does NOT overflow or overlap */
-  .managefaqs-container .faq-modal-content .modal-body {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 1rem !important;             /* spacing between fields */
-    max-height: 65vh !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    padding-right: 0.25rem !important;
-    box-sizing: border-box !important;
-    word-break: break-word !important;
-  }
-  
-  .managefaqs-container .faq-modal-content .modal-question {
-    font-size: 1.05rem !important;
-    font-weight: 600 !important;
-    color: #1f2937;
-    margin-bottom: -0.5rem !important;
-  }
-  
-  .managefaqs-container .faq-modal-content .modal-label {
-    font-size: 0.875rem !important;
-    font-weight: 600 !important;
-    color: #374151 !important;
-    margin-bottom: 0.25rem !important;
-  }
-  
-  /* Fix Textareas + Selects */
-  .managefaqs-container .faq-modal-content .modal-textarea,
-  .managefaqs-container .faq-modal-content .modal-select {
-    width: 100% !important;
-    max-width: 100% !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 0.5rem !important;
-    padding: 0.75rem !important;
-    font-size: 0.875rem !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-  }
-  
-  .managefaqs-container .faq-modal-content .modal-textarea {
-    min-height: 90px !important;
-    max-height: 180px !important;
-    resize: vertical !important;
-  }
-  
-  /* Footer Sticky */
-  .managefaqs-container .faq-modal-content .modal-footer {
-    display: flex !important;
-    justify-content: flex-end !important;
-    gap: 1rem !important;
-    margin-top: 1.25rem !important;
-    padding-top: 1rem !important;
-    border-top: 1px solid #e5e7eb !important;
-    background: #fff !important;
-    position: sticky !important;
-    bottom: 0 !important;
-  }
-  
-  /* Buttons */
-  .reject-btn {
-    background-color: #ef4444;
-    padding: 0.5rem 1rem;
-    color: white;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    cursor: pointer;
-  }
-  
-  .reject-btn:hover {
-    background-color: #dc2626;
-  }
-  
-  .approve-btn {
-    background-color: #10b981;
-    padding: 0.5rem 1rem;
-    color: white;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    cursor: pointer;
-  }
-  
-  .approve-btn:hover {
-    background-color: #059669;
-  }
-  
-  .close-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #6b7280;
-  }
-  
-  .close-btn:hover {
-    color: #374151;
-  }
-  
-  .managefaqs-container .faq-modal-content .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  .managefaqs-container .faq-modal-content .modal-header h2 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1f2937;
-  }
-  
-  .error-box {
-    background-color: #fee2e2;
-    border: 1px solid #fecaca;
-    color: #991b1b;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  /* Responsive */
-  @media (max-width: 1024px) {
-    .managefaqs-container {
-      padding-left: 0;
-    }
-    
-    .submissions-list {
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    }
-  }
-  
-  @media (max-width: 640px) {
-    .submissions-list {
-      grid-template-columns: 1fr;
-    }
-  }
+}
 
-  /* ===========================================================
-    DARK-MODE ADAPTIVE MODAL FIX (KEEP ALL CURRENT STYLES)
-   =========================================================== */
+@media (max-width: 640px) {
+  .submissions-list {
+    grid-template-columns: 1fr;
+  }
+}
 
-/* LIGHT THEME VARIABLES */
+.submission-card {
+  background: white;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.submission-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.submission-question {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.submission-meta,
+.submission-date {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0.25rem 0;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.view-text {
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #374151;
+  margin: 0;
+}
+
+/* ===========================================================
+   Buttons
+=========================================================== */
+.review-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1.25rem;
+  background-color: #2563eb;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.review-btn:hover {
+  background-color: #1e4fc5;
+}
+
+.delete-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1.25rem;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+}
+
+.view-btn {
+  padding: 0.5rem 1.25rem;
+  background-color: #6b7280;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.view-btn:hover {
+  background-color: #4b5563;
+}
+
+.cancel-btn {
+  padding: 0.5rem 1rem;
+  background-color: #f3f4f6;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.delete-confirm-btn {
+  padding: 0.5rem 1rem;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.delete-confirm-btn:hover {
+  background-color: #dc2626;
+}
+
+/* Modal action buttons */
+.reject-btn {
+  background-color: #ef4444;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: none;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.reject-btn:hover {
+  background-color: #dc2626;
+}
+
+.approve-btn {
+  background-color: #10b981;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: none;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.approve-btn:hover {
+  background-color: #059669;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.close-btn:hover {
+  color: #374151;
+}
+
+/* ===========================================================
+   Empty State
+=========================================================== */
+.empty-state {
+  text-align: center;
+  color: #6b7280;
+  padding: 3rem 1rem;
+}
+
+.empty-icon {
+  opacity: 0.4;
+  margin-bottom: 1rem;
+}
+
+/* ===========================================================
+   Loading
+=========================================================== */
+.loading-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4rem;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===========================================================
+   Modal Base (ManageFAQs)
+=========================================================== */
+.managefaqs-container .faq-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+  z-index: 99999 !important;
+}
+
+.managefaqs-container .faq-modal-content {
+  background: white !important;
+  width: 100% !important;
+  max-width: 480px !important;
+  border-radius: 0.75rem !important;
+  padding: 1.5rem !important;
+  max-height: 85vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+  box-sizing: border-box !important;
+}
+
+.managefaqs-container .faq-modal-content .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.managefaqs-container .faq-modal-content .modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Body layout prevents overlap */
+.managefaqs-container .faq-modal-content .modal-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  max-height: 65vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 0.25rem !important;
+  box-sizing: border-box !important;
+  word-break: break-word !important;
+}
+
+.managefaqs-container .faq-modal-content .modal-question {
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  color: #1f2937;
+  margin-bottom: -0.5rem !important;
+}
+
+.managefaqs-container .faq-modal-content .modal-label {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  margin-bottom: 0.25rem !important;
+}
+
+/* Inputs */
+.managefaqs-container .faq-modal-content .modal-textarea,
+.managefaqs-container .faq-modal-content .modal-select {
+  width: 100% !important;
+  max-width: 100% !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem !important;
+  font-size: 0.875rem !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+.managefaqs-container .faq-modal-content .modal-textarea {
+  min-height: 90px !important;
+  max-height: 180px !important;
+  resize: vertical !important;
+}
+
+/* Footer sticky */
+.managefaqs-container .faq-modal-content .modal-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 1rem !important;
+  margin-top: 1.25rem !important;
+  padding-top: 1rem !important;
+  border-top: 1px solid #e5e7eb !important;
+  background: #fff !important;
+  position: sticky !important;
+  bottom: 0 !important;
+}
+
+/* ===========================================================
+   Dark Mode Variables + Modal Adaptation
+=========================================================== */
+/* Light theme variables */
 :root {
   --modal-bg: #ffffff;
   --modal-text: #1f2937;
@@ -420,7 +447,7 @@
   --modal-input-text: #1f2937;
 }
 
-/* DARK THEME VARIABLES */
+/* Dark theme variables */
 html.dark-mode {
   --modal-bg: #1e2530;
   --modal-text: #f3f4f6;
@@ -436,17 +463,12 @@ html.dark-mode {
   border: 1px solid var(--modal-border) !important;
 }
 
-/* Title */
-.managefaqs-container .faq-modal-content .modal-header h2 {
+.managefaqs-container .faq-modal-content .modal-header h2,
+.managefaqs-container .faq-modal-content .modal-label,
+.managefaqs-container .faq-modal-content .modal-question {
   color: var(--modal-text) !important;
 }
 
-/* Labels */
-.managefaqs-container .faq-modal-content .modal-label {
-  color: var(--modal-text) !important;
-}
-
-/* Textarea & Select */
 .managefaqs-container .faq-modal-content .modal-textarea,
 .managefaqs-container .faq-modal-content .modal-select {
   background: var(--modal-input-bg) !important;
@@ -454,24 +476,52 @@ html.dark-mode {
   border: 1px solid var(--modal-border) !important;
 }
 
-/* Placeholder fix */
 .managefaqs-container .faq-modal-content .modal-textarea::placeholder {
   color: var(--modal-input-text) !important;
   opacity: 0.6;
 }
 
-/* Question text */
-.managefaqs-container .faq-modal-content .modal-question {
-  color: var(--modal-text) !important;
-}
-
-/* Footer background stays readable */
 .managefaqs-container .faq-modal-content .modal-footer {
   background: var(--modal-bg) !important;
   border-top: 1px solid var(--modal-border) !important;
 }
 
-/* Close button */
 .managefaqs-container .faq-modal-content .close-btn {
   color: var(--modal-text) !important;
+}
+
+/* ===========================================================
+   Confirm Modal (Delete) — no inline styles
+=========================================================== */
+.confirm-modal-center {
+  text-align: center;
+  padding: 1rem;
+}
+
+.confirm-modal-icon {
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+.confirm-modal-icon.danger {
+  color: #ef4444;
+}
+
+.confirm-modal-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.confirm-modal-question {
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.confirm-modal-warning {
+  color: #991b1b;
+  font-size: 0.875rem;
+  margin-top: 1rem;
 }

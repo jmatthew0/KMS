@@ -1,0 +1,493 @@
+/* ===========================
+   BASE MODAL SYSTEM
+=========================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1.25rem;
+  }
+  
+  /* ✅ wide by default - increased from 900px to 1200px */
+  .modal-content {
+    background-color: #ffffff;
+    border-radius: 0.9rem;
+    padding: 1.5rem;
+    width: min(1200px, calc(100vw - 48px));
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+    border: 1px solid rgba(229, 231, 235, 0.9);
+  }
+  
+  /* ✅ extra wide - increased from 1100px to 1400px */
+  .modal-content.large {
+    width: min(1400px, calc(100vw - 48px));
+    max-height: 92vh;
+  }
+  
+  /* header */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .modal-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .modal-close {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+  
+  .modal-close:hover {
+    color: #111827;
+  }
+  
+  /* ===========================
+     MODAL FORM LAYOUT (WIDE)
+  =========================== */
+  
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.25rem;
+  }
+  
+  .modal-grid .full {
+    grid-column: 1 / -1;
+  }
+  
+  .form-group {
+    margin-bottom: 0;
+  }
+  
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-input,
+  .form-select {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.6rem;
+    font-size: 0.95rem;
+    font-family: "Asap", sans-serif;
+    transition: all 0.2s;
+    box-sizing: border-box;
+    background: #fff;
+  }
+  
+  .form-textarea {
+    width: 100%;
+    padding: 0.85rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.6rem;
+    font-size: 0.95rem;
+    font-family: "Asap", sans-serif;
+    resize: vertical;
+    box-sizing: border-box;
+    background: #fff;
+  }
+  
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  }
+  
+  .file-input {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border: 1px dashed #cbd5e1;
+    border-radius: 0.6rem;
+    font-size: 0.9rem;
+    font-family: "Asap", sans-serif;
+    cursor: pointer;
+    box-sizing: border-box;
+    background: #f8fafc;
+  }
+  
+  /* footer */
+  .modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .btn-cancel {
+    padding: 0.625rem 1.25rem;
+    background-color: #ffffff;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.6rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: "Asap", sans-serif;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+  
+  .btn-submit {
+    padding: 0.625rem 1.25rem;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.6rem;
+    font-size: 0.875rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: "Asap", sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .btn-submit:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .btn-submit:disabled,
+  .btn-cancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* ===========================
+     DELETE MODAL
+  =========================== */
+  
+  .delete-modal {
+    width: min(520px, calc(100vw - 24px));
+  }
+  
+  .delete-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #dc2626;
+  }
+  
+  .delete-modal-body {
+    padding: 0.75rem 0 0.25rem 0;
+  }
+  
+  .delete-message {
+    margin-bottom: 0.75rem;
+    color: #374151;
+  }
+  
+  .delete-warning {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  .btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.1rem;
+    background-color: #dc2626;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.6rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-delete:hover {
+    background-color: #b91c1c;
+  }
+  
+  .btn-delete:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  
+  /* ===========================
+     VIEWER MODAL
+  =========================== */
+  
+  .viewer-content {
+    margin-top: 0.5rem;
+  }
+  
+  .viewer-meta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+  
+  .meta-badge {
+    padding: 0.25rem 0.75rem;
+    background-color: #eff6ff;
+    color: #1e40af;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+  
+  .meta-text {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .document-summary {
+    padding: 1rem;
+    background-color: #f3f4f6;
+    border-radius: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  
+  .viewer-body {
+    padding: 1.25rem;
+    background-color: #f9fafb;
+    border-radius: 0.6rem;
+    margin-bottom: 1.25rem;
+    min-height: 200px;
+  }
+  
+  .viewer-content-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: #111827;
+  }
+  
+  .viewer-content-text {
+    margin: 0;
+    white-space: pre-wrap;
+    color: #374151;
+    line-height: 1.7;
+  }
+  
+  .viewer-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .action-btn-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background-color: #ffffff;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.55rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: "Asap", sans-serif;
+  }
+  
+  .action-btn-sm:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+  
+  /* Attachments */
+  .attachments-section {
+    padding: 1rem;
+    background-color: #eff6ff;
+    border-radius: 0.6rem;
+    margin-bottom: 1rem;
+    border: 1px solid #bfdbfe;
+  }
+  
+  .attachments-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: #2563eb;
+  }
+  
+  .loading-attachments {
+    text-align: center;
+    padding: 1rem;
+    color: #6b7280;
+  }
+  
+  .attachment-item {
+    margin-bottom: 1rem;
+  }
+  
+  .attachment-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .attachment-details {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .file-icon {
+    font-size: 1.5rem;
+  }
+  
+  .file-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #111827;
+  }
+  
+  .file-meta {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+  
+  .file-preview {
+    margin-top: 0.5rem;
+  }
+  
+  .image-preview {
+    text-align: center;
+  }
+  
+  .pdf-viewer {
+    width: 100%;
+    height: 520px;
+    border: 1px solid #d1d5db;
+    border-radius: 0.6rem;
+  }
+  
+  .image-viewer {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.6rem;
+    border: 1px solid #d1d5db;
+  }
+  
+  .video-viewer {
+    width: 100%;
+    max-height: 520px;
+    border-radius: 0.6rem;
+    border: 1px solid #d1d5db;
+  }
+  
+  .audio-viewer {
+    width: 100%;
+  }
+  
+  /* Comments */
+  .comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+  }
+  
+  .comment-input {
+    width: 100%;
+    padding: 0.85rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.6rem;
+    font-size: 0.9rem;
+    font-family: "Asap", sans-serif;
+    resize: vertical;
+    transition: all 0.2s;
+    box-sizing: border-box;
+  }
+  
+  .comment-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  }
+  
+  /* Version history basic */
+  .version-modal-body {
+    padding: 1.5rem;
+  }
+  
+  .version-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+  }
+  
+  .version-empty-icon {
+    margin: 0 auto 1rem;
+    opacity: 0.5;
+    display: block;
+  }
+  
+  .version-empty-subtext {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+  
+  /* ===========================
+     RESPONSIVE
+  =========================== */
+  @media (max-width: 768px) {
+    .modal-content {
+      width: 100%;
+      padding: 1.25rem;
+    }
+  
+    .modal-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .attachment-info {
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+  
+    .pdf-viewer,
+    .video-viewer {
+      height: 320px;
+    }
+  }

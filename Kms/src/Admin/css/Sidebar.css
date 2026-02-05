@@ -55,6 +55,16 @@
   height: 100%;
 }
 
+.sidebar-menu a {
+  text-decoration: none;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a:active,
+.sidebar-menu a:visited{
+  text-decoration:none;
+}
+
 .sidebar-item {
   display: flex;
   align-items: center;
@@ -209,4 +219,14 @@
 /* Add extra space before logout */
 .sidebar-item.logout {
   margin-top: 1rem;
+}
+
+/* Make brand clickable without inline styles */
+.sidebar-brand-btn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
 }

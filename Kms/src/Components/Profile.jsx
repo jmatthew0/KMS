@@ -7,6 +7,8 @@ import {
   getUserDocuments,
 } from "../api/documentsService";
 
+import AvatarUploadModal from "./modals/AvatarUploadModal";
+
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,11 @@ export default function Profile() {
 
   const [avatarUrl, setAvatarUrl] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  // ✅ Avatar modal states
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [avatarModalError, setAvatarModalError] = useState("");
+  const [avatarModalSuccess, setAvatarModalSuccess] = useState(false);
 
   // Activity data
   const [recentlyViewed, setRecentlyViewed] = useState([]);
@@ -70,7 +77,6 @@ export default function Profile() {
       }
 
       if (!profileData) {
-        // Row not found (or RLS blocked and returned no rows)
         console.warn("No profile row found for user:", userId);
         setProfile(null);
         setFullName("");
@@ -136,7 +142,7 @@ export default function Profile() {
         setUploads(formatted);
       }
 
-      // Activity logs - fixed query without broken relationship
+      // Activity logs
       const { data: activityData, error: actErr } = await supabase
         .from("activity_logs")
         .select("id, action, entity_type, entity_id, created_at")
@@ -149,10 +155,9 @@ export default function Profile() {
       }
 
       if (activityData && activityData.length > 0) {
-        // Fetch document titles separately if entity_type is 'document'
         const documentIds = activityData
-          .filter(a => a.entity_type === 'document' && a.entity_id)
-          .map(a => a.entity_id);
+          .filter((a) => a.entity_type === "document" && a.entity_id)
+          .map((a) => a.entity_id);
 
         let documentTitles = {};
         if (documentIds.length > 0) {
@@ -160,7 +165,7 @@ export default function Profile() {
             .from("documents")
             .select("id, title")
             .in("id", documentIds);
-          
+
           if (docs) {
             documentTitles = docs.reduce((acc, doc) => {
               acc[doc.id] = doc.title;
@@ -189,27 +194,37 @@ export default function Profile() {
     }
   };
 
+  // ✅ Avatar upload using MODAL (no alert)
   const handleAvatarUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (!userId) {
-      alert("No user session found. Please log in again.");
+      setAvatarModalError("No user session found. Please log in again.");
+      setAvatarModalSuccess(false);
+      setShowAvatarModal(true);
       return;
     }
 
-    // Validate file
+    // Validate
     if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file");
+      setAvatarModalError("Please upload an image file.");
+      setAvatarModalSuccess(false);
+      setShowAvatarModal(true);
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert("Image must be less than 2MB");
+      setAvatarModalError("Image must be less than 2MB.");
+      setAvatarModalSuccess(false);
+      setShowAvatarModal(true);
       return;
     }
 
     setUploadingAvatar(true);
+    setAvatarModalError("");
+    setAvatarModalSuccess(false);
+    setShowAvatarModal(true);
 
     try {
       const fileExt = file.name.split(".").pop();
@@ -222,10 +237,7 @@ export default function Profile() {
 
       if (uploadError) throw uploadError;
 
-      const { data: urlData } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(filePath);
-
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
       const publicUrl = urlData?.publicUrl;
 
       const { error: updateError } = await supabase
@@ -236,10 +248,11 @@ export default function Profile() {
       if (updateError) throw updateError;
 
       setAvatarUrl(publicUrl);
-      alert("Avatar updated successfully!");
+      setAvatarModalSuccess(true);
     } catch (err) {
       console.error("Error uploading avatar:", err);
-      alert(`Failed to upload avatar${err?.message ? `: ${err.message}` : ""}`);
+      setAvatarModalError(err?.message || "Failed to upload avatar.");
+      setAvatarModalSuccess(false);
     } finally {
       setUploadingAvatar(false);
     }
@@ -256,7 +269,6 @@ export default function Profile() {
       return;
     }
 
-    // Validate password if changing
     if (newPassword) {
       if (newPassword.length < 6) {
         alert("Password must be at least 6 characters");
@@ -272,7 +284,6 @@ export default function Profile() {
     setError("");
 
     try {
-      // Update profile
       const { error: profileError } = await supabase
         .from("profiles")
         .update({
@@ -283,7 +294,6 @@ export default function Profile() {
 
       if (profileError) throw profileError;
 
-      // Update password if provided
       if (newPassword) {
         const { error: passwordError } = await supabase.auth.updateUser({
           password: newPassword,
@@ -291,17 +301,12 @@ export default function Profile() {
         if (passwordError) throw passwordError;
       }
 
-      // Update email if changed
       const originalEmail = profile?.email || "";
       if (email && email !== originalEmail) {
-        const { error: emailError } = await supabase.auth.updateUser({
-          email,
-        });
+        const { error: emailError } = await supabase.auth.updateUser({ email });
         if (emailError) throw emailError;
 
-        alert(
-          "Profile updated! Please check your email to confirm the new email address."
-        );
+        alert("Profile updated! Please check your email to confirm the new email address.");
       } else {
         alert("Profile updated successfully!");
       }
@@ -313,9 +318,7 @@ export default function Profile() {
       setConfirmPassword("");
     } catch (err) {
       console.error("Error updating profile:", err);
-      const msg = `Failed to update profile${
-        err?.message ? `: ${err.message}` : ""
-      }`;
+      const msg = `Failed to update profile${err?.message ? `: ${err.message}` : ""}`;
       setError(msg);
       alert(msg);
     } finally {
@@ -358,9 +361,7 @@ export default function Profile() {
       <div className="profile-content">
         <div className="profile-header">
           <h1 className="profile-title">Profile</h1>
-          <p className="profile-subtitle">
-            Manage your account and view your activity
-          </p>
+          <p className="profile-subtitle">Manage your account and view your activity</p>
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -369,7 +370,7 @@ export default function Profile() {
           <div className="section-header">
             <h2 className="section-title">Account Information</h2>
             {!isEditing && (
-              <button className="edit-button" onClick={() => setIsEditing(true)}>
+              <button className="edit-button" onClick={() => setIsEditing(true)} type="button">
                 Edit Profile
               </button>
             )}
@@ -428,9 +429,7 @@ export default function Profile() {
                   className="form-input"
                   required
                 />
-                <p className="form-hint">
-                  Changing your email will require verification
-                </p>
+                <p className="form-hint">Changing your email will require verification</p>
               </div>
 
               <div className="form-divider">
@@ -477,18 +476,10 @@ export default function Profile() {
               )}
 
               <div className="form-actions">
-                <button
-                  className="btn btn-primary"
-                  onClick={handleSave}
-                  disabled={updating}
-                >
+                <button className="btn btn-primary" onClick={handleSave} disabled={updating} type="button">
                   {updating ? "Saving..." : "Save Changes"}
                 </button>
-                <button
-                  className="btn btn-secondary"
-                  onClick={handleCancel}
-                  disabled={updating}
-                >
+                <button className="btn btn-secondary" onClick={handleCancel} disabled={updating} type="button">
                   Cancel
                 </button>
               </div>
@@ -509,26 +500,21 @@ export default function Profile() {
               </div>
               <div className="info-item">
                 <span className="info-label">Account Status</span>
-                <span
-                  className={`status-badge ${
-                    profile?.is_active ? "active" : "inactive"
-                  }`}
-                >
+                <span className={`status-badge ${profile?.is_active ? "active" : "inactive"}`}>
                   {profile?.is_active ? "Active" : "Inactive"}
                 </span>
               </div>
               <div className="info-item">
                 <span className="info-label">Member Since</span>
                 <span className="info-value">
-                  {profile?.created_at
-                    ? new Date(profile.created_at).toLocaleDateString()
-                    : "N/A"}
+                  {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "N/A"}
                 </span>
               </div>
             </div>
           )}
         </div>
 
+        {/* Recently viewed */}
         <div className="profile-section">
           <div className="section-header">
             <h2 className="section-title">Recently Viewed Documents</h2>
@@ -556,6 +542,7 @@ export default function Profile() {
           </div>
         </div>
 
+        {/* Uploads */}
         <div className="profile-section">
           <div className="section-header">
             <h2 className="section-title">Your Uploads</h2>
@@ -583,6 +570,7 @@ export default function Profile() {
           </div>
         </div>
 
+        {/* Activity */}
         <div className="profile-section">
           <div className="section-header">
             <h2 className="section-title">Recent Activity</h2>
@@ -613,6 +601,19 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      {/* ✅ Avatar Modal */}
+      <AvatarUploadModal
+        open={showAvatarModal}
+        uploading={uploadingAvatar}
+        error={avatarModalError}
+        success={avatarModalSuccess}
+        onClose={() => {
+          setShowAvatarModal(false);
+          setAvatarModalError("");
+          setAvatarModalSuccess(false);
+        }}
+      />
     </div>
   );
 }

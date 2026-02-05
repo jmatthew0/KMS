@@ -1,9 +1,19 @@
+// src/Admin/ManageFAQs.jsx
 import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import "./css/ManageFAQs.css";
+import { Check, X, FileText, Trash2, Edit3 } from "lucide-react";
 
-import { Check, X, FileText, Trash2, Eye } from "lucide-react";
+// ✅ Admin-only separated modals
+import ReviewSubmissionModal from "./modals/ReviewSubmissionModal";
+import EditFaqModal from "./modals/EditFaqModal";
 
+/**
+ * ManageFAQs (Admin)
+ * - Pending tab: review user submissions (approve/reject)
+ * - Approved tab: edit/delete approved user-submitted FAQs
+ * - No inline styles (moved to CSS)
+ */
 export default function ManageFAQs() {
   const [submissions, setSubmissions] = useState([]);
   const [approvedFAQs, setApprovedFAQs] = useState([]);
@@ -11,55 +21,89 @@ export default function ManageFAQs() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("pending"); // "pending" or "approved"
+  const [activeTab, setActiveTab] = useState("pending"); // "pending" | "approved"
 
-  // Modal states
+  // Review (pending) modal state
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [answer, setAnswer] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
-  
-  // Delete modal states
+
+  // Edit (approved) modal state
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [faqToEdit, setFaqToEdit] = useState(null);
+  const [editQuestion, setEditQuestion] = useState("");
+  const [editAnswer, setEditAnswer] = useState("");
+  const [editCategoryId, setEditCategoryId] = useState("");
+  const [editLoading, setEditLoading] = useState(false);
+
+  // Delete confirm modal state (kept in this file, no inline styles)
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [faqToDelete, setFaqToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  // Status modal (replaces browser alert)
+  const [statusModal, setStatusModal] = useState({
+    open: false,
+    type: "success", // "success" | "error"
+    title: "",
+    message: "",
+  });
 
   useEffect(() => {
     loadData();
   }, []);
+
+  const openStatus = ({ type = "success", title, message }) => {
+    setStatusModal({
+      open: true,
+      type,
+      title: title || (type === "error" ? "Error" : "Success"),
+      message: message || "",
+    });
+  };
+
+  const closeStatus = () => {
+    setStatusModal((prev) => ({ ...prev, open: false }));
+  };
 
   const loadData = async () => {
     setLoading(true);
     setError("");
 
     try {
-      // Load pending submissions
+      // Pending submissions
       const { data: subData, error: subError } = await supabase
         .from("faq_submissions")
-        .select(`
+        .select(
+          `
           *,
           user:profiles(id, full_name)
-        `)
+        `
+        )
         .eq("status", "pending")
         .order("created_at", { ascending: false });
 
       if (subError) throw subError;
       setSubmissions(subData || []);
 
-      // Load approved FAQs (only user-submitted ones)
+      // Approved FAQs (user-submitted only)
       const { data: faqData, error: faqError } = await supabase
         .from("faqs")
-        .select(`
+        .select(
+          `
           *,
-          category:faq_categories(name),
+          category:faq_categories(id, name),
           creator:profiles(full_name)
-        `)
-        .not('created_by', 'is', null)  // Only show FAQs that have a creator (user-submitted)
+        `
+        )
+        .not("created_by", "is", null)
         .order("created_at", { ascending: false });
 
       if (faqError) throw faqError;
       setApprovedFAQs(faqData || []);
 
-      // Load categories
+      // Categories
       const { data: catData, error: catError } = await supabase
         .from("faq_categories")
         .select("*")
@@ -75,17 +119,23 @@ export default function ManageFAQs() {
     }
   };
 
-  // Approve submission → insert into faqs table
+  // ----------------------------
+  // Pending: Approve / Reject
+  // ----------------------------
   const approveSubmission = async () => {
     if (!selectedSubmission) return;
 
     if (!answer.trim()) {
-      alert("Please provide an answer before approving.");
+      openStatus({
+        type: "error",
+        title: "Missing Answer",
+        message: "Please provide an answer before approving.",
+      });
       return;
     }
 
     try {
-      // Insert FAQ
+      // Insert new FAQ
       const { error: insertError } = await supabase.from("faqs").insert({
         question: selectedSubmission.question,
         answer: answer.trim(),
@@ -100,7 +150,7 @@ export default function ManageFAQs() {
       if (insertError) throw insertError;
 
       // Mark submission as approved
-      await supabase
+      const { error: updateError } = await supabase
         .from("faq_submissions")
         .update({
           status: "approved",
@@ -108,21 +158,34 @@ export default function ManageFAQs() {
         })
         .eq("id", selectedSubmission.id);
 
-      alert("FAQ approved and published!");
+      if (updateError) throw updateError;
+
+      openStatus({
+        type: "success",
+        title: "Approved",
+        message: "FAQ approved and published!",
+      });
+
       setSelectedSubmission(null);
+      setAnswer("");
+      setCategoryId("");
+      setAdminNotes("");
       loadData();
     } catch (err) {
       console.error(err);
-      alert("Failed to approve submission.");
+      openStatus({
+        type: "error",
+        title: "Approve Failed",
+        message: "Failed to approve submission.",
+      });
     }
   };
 
-  // Reject submission
   const rejectSubmission = async () => {
     if (!selectedSubmission) return;
 
     try {
-      await supabase
+      const { error: updateError } = await supabase
         .from("faq_submissions")
         .update({
           status: "rejected",
@@ -130,24 +193,110 @@ export default function ManageFAQs() {
         })
         .eq("id", selectedSubmission.id);
 
-      alert("Submission rejected.");
+      if (updateError) throw updateError;
+
+      openStatus({
+        type: "success",
+        title: "Rejected",
+        message: "Submission rejected.",
+      });
+
       setSelectedSubmission(null);
+      setAnswer("");
+      setCategoryId("");
+      setAdminNotes("");
       loadData();
     } catch (err) {
       console.error(err);
-      alert("Failed to reject submission.");
+      openStatus({
+        type: "error",
+        title: "Reject Failed",
+        message: "Failed to reject submission.",
+      });
     }
   };
 
-  // Delete approved FAQ
-  const handleDeleteFAQ = (faq) => {
+  // ----------------------------
+  // Approved: Edit
+  // ----------------------------
+  const openEditFaq = (faq) => {
+    setFaqToEdit(faq);
+    setEditQuestion(faq.question || "");
+    setEditAnswer(faq.answer || "");
+    setEditCategoryId(faq.category_id || "");
+    setShowEditModal(true);
+  };
+
+  const closeEditFaq = () => {
+    if (editLoading) return;
+    setShowEditModal(false);
+    setFaqToEdit(null);
+  };
+
+  const saveEditFaq = async () => {
+    if (!faqToEdit) return;
+
+    if (!editQuestion.trim() || !editAnswer.trim()) {
+      openStatus({
+        type: "error",
+        title: "Missing Fields",
+        message: "Please fill in Question and Answer.",
+      });
+      return;
+    }
+
+    setEditLoading(true);
+    try {
+      const { error: updateError } = await supabase
+        .from("faqs")
+        .update({
+          question: editQuestion.trim(),
+          answer: editAnswer.trim(),
+          category_id: editCategoryId || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", faqToEdit.id);
+
+      if (updateError) throw updateError;
+
+      openStatus({
+        type: "success",
+        title: "Updated",
+        message: "FAQ updated successfully!",
+      });
+
+      closeEditFaq();
+      loadData();
+    } catch (err) {
+      console.error(err);
+      openStatus({
+        type: "error",
+        title: "Update Failed",
+        message: "Failed to update FAQ: " + err.message,
+      });
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  // ----------------------------
+  // Approved: Delete
+  // ----------------------------
+  const openDeleteFaq = (faq) => {
     setFaqToDelete(faq);
     setShowDeleteModal(true);
   };
 
-  const confirmDeleteFAQ = async () => {
+  const closeDeleteFaq = () => {
+    if (deleteLoading) return;
+    setShowDeleteModal(false);
+    setFaqToDelete(null);
+  };
+
+  const confirmDeleteFaq = async () => {
     if (!faqToDelete) return;
 
+    setDeleteLoading(true);
     try {
       const { error: deleteError } = await supabase
         .from("faqs")
@@ -156,13 +305,23 @@ export default function ManageFAQs() {
 
       if (deleteError) throw deleteError;
 
-      alert("FAQ deleted successfully!");
-      setShowDeleteModal(false);
-      setFaqToDelete(null);
+      openStatus({
+        type: "success",
+        title: "Deleted",
+        message: "FAQ deleted successfully!",
+      });
+
+      closeDeleteFaq();
       loadData();
     } catch (err) {
       console.error(err);
-      alert("Failed to delete FAQ: " + err.message);
+      openStatus({
+        type: "error",
+        title: "Delete Failed",
+        message: "Failed to delete FAQ: " + err.message,
+      });
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -191,13 +350,16 @@ export default function ManageFAQs() {
         <button
           className={`tab-button ${activeTab === "pending" ? "active" : ""}`}
           onClick={() => setActiveTab("pending")}
+          type="button"
         >
           <FileText size={18} />
           Pending ({submissions.length})
         </button>
+
         <button
           className={`tab-button ${activeTab === "approved" ? "active" : ""}`}
           onClick={() => setActiveTab("approved")}
+          type="button"
         >
           <Check size={18} />
           Approved ({approvedFAQs.length})
@@ -230,6 +392,7 @@ export default function ManageFAQs() {
                     setCategoryId("");
                     setAdminNotes("");
                   }}
+                  type="button"
                 >
                   Review
                 </button>
@@ -257,122 +420,131 @@ export default function ManageFAQs() {
                   </p>
                 </div>
 
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDeleteFAQ(faq)}
-                >
-                  <Trash2 size={16} />
-                  Delete
-                </button>
+                <div className="admin-card-actions">
+                  <button
+                    className="review-btn"
+                    onClick={() => openEditFaq(faq)}
+                    type="button"
+                  >
+                    <Edit3 size={16} />
+                    Edit
+                  </button>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => openDeleteFaq(faq)}
+                    type="button"
+                  >
+                    <Trash2 size={16} />
+                    Delete
+                  </button>
+                </div>
               </div>
             ))
           )}
         </div>
       )}
 
-      {/* Review Modal */}
-      {selectedSubmission && (
-        <div className="faq-modal-overlay" onClick={() => setSelectedSubmission(null)}>
+      {/* ✅ Pending Review Modal (separated) */}
+      <ReviewSubmissionModal
+        open={!!selectedSubmission}
+        submission={selectedSubmission}
+        categories={categories}
+        answer={answer}
+        categoryId={categoryId}
+        adminNotes={adminNotes}
+        onChangeAnswer={setAnswer}
+        onChangeCategory={setCategoryId}
+        onChangeNotes={setAdminNotes}
+        onApprove={approveSubmission}
+        onReject={rejectSubmission}
+        onClose={() => setSelectedSubmission(null)}
+      />
+
+      {/* ✅ Edit FAQ Modal (separated) */}
+      <EditFaqModal
+        open={showEditModal}
+        faq={faqToEdit}
+        categories={categories}
+        question={editQuestion}
+        answer={editAnswer}
+        categoryId={editCategoryId}
+        onChangeQuestion={setEditQuestion}
+        onChangeAnswer={setEditAnswer}
+        onChangeCategory={setEditCategoryId}
+        onSave={saveEditFaq}
+        onClose={closeEditFaq}
+        loading={editLoading}
+      />
+
+      {/* ✅ Delete FAQ Confirmation Modal (no inline styles) */}
+      {showDeleteModal && faqToDelete && (
+        <div className="faq-modal-overlay" onClick={closeDeleteFaq}>
           <div className="faq-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Review Submission</h2>
+              <h2>Delete FAQ</h2>
               <button
                 className="close-btn"
-                onClick={() => setSelectedSubmission(null)}
+                onClick={closeDeleteFaq}
+                disabled={deleteLoading}
+                type="button"
               >
                 <X size={20} />
               </button>
             </div>
 
             <div className="modal-body">
-              <p className="modal-question">{selectedSubmission.question}</p>
-
-              <label className="modal-label">Answer *</label>
-              <textarea
-                className="modal-textarea"
-                rows="4"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-              />
-
-              <label className="modal-label">Category</label>
-              <select
-                className="modal-select"
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-              >
-                <option value="">No Category</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-
-              <label className="modal-label">Admin Notes</label>
-              <textarea
-                className="modal-textarea"
-                rows="3"
-                value={adminNotes}
-                onChange={(e) => setAdminNotes(e.target.value)}
-                placeholder="Optional notes…"
-              />
+              <div className="confirm-modal-center">
+                <Trash2 size={48} className="confirm-modal-icon danger" />
+                <p className="confirm-modal-title">
+                  Are you sure you want to delete this FAQ?
+                </p>
+                <p className="confirm-modal-question">{faqToDelete.question}</p>
+                <p className="confirm-modal-warning">This action cannot be undone.</p>
+              </div>
             </div>
 
             <div className="modal-footer">
-              <button className="reject-btn" onClick={rejectSubmission}>
-                <X size={18} /> Reject
+              <button
+                className="cancel-btn"
+                onClick={closeDeleteFaq}
+                disabled={deleteLoading}
+                type="button"
+              >
+                Cancel
               </button>
-              <button className="approve-btn" onClick={approveSubmission}>
-                <Check size={18} /> Approve
+              <button
+                className="delete-confirm-btn"
+                onClick={confirmDeleteFaq}
+                disabled={deleteLoading}
+                type="button"
+              >
+                <Trash2 size={18} />
+                {deleteLoading ? "Deleting..." : "Delete FAQ"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Delete FAQ Confirmation Modal */}
-      {showDeleteModal && faqToDelete && (
-        <div className="faq-modal-overlay" onClick={() => setShowDeleteModal(false)}>
+      {/* ✅ Status Modal (replaces alerts) */}
+      {statusModal.open && (
+        <div className="faq-modal-overlay" onClick={closeStatus}>
           <div className="faq-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Delete FAQ</h2>
-              <button
-                className="close-btn"
-                onClick={() => setShowDeleteModal(false)}
-              >
+              <h2>{statusModal.title}</h2>
+              <button className="close-btn" onClick={closeStatus} type="button">
                 <X size={20} />
               </button>
             </div>
 
             <div className="modal-body">
-              <div style={{ textAlign: 'center', padding: '1rem' }}>
-                <Trash2 size={48} style={{ color: '#ef4444', margin: '0 auto 1rem' }} />
-                <p style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem', color: '#1f2937' }}>
-                  Are you sure you want to delete this FAQ?
-                </p>
-                <p style={{ color: '#6b7280', marginBottom: '0.5rem', fontWeight: '500' }}>
-                  {faqToDelete.question}
-                </p>
-                <p style={{ color: '#991b1b', fontSize: '0.875rem', marginTop: '1rem' }}>
-                  This action cannot be undone.
-                </p>
-              </div>
+              <p className="status-message">{statusModal.message}</p>
             </div>
 
             <div className="modal-footer">
-              <button 
-                className="cancel-btn" 
-                onClick={() => setShowDeleteModal(false)}
-              >
-                Cancel
-              </button>
-              <button 
-                className="delete-confirm-btn" 
-                onClick={confirmDeleteFAQ}
-              >
-                <Trash2 size={18} />
-                Delete FAQ
+              <button className="approve-btn" onClick={closeStatus} type="button">
+                OK
               </button>
             </div>
           </div>

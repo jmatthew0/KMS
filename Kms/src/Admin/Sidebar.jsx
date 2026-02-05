@@ -9,18 +9,19 @@ import {
   FileText,
   Clock3,
 } from "lucide-react";
-
 import { NavLink, useNavigate } from "react-router-dom";
 
 import IPOPHLLogo from "../assets/IPOPHL logo.png";
 import DarkModeToggle from "../Components/DarkModeToggle";
+
+// ✅ separated modal
+import LogoutModal from "./modals/LogoutModal";
 
 export default function Sidebar({ onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 
-  // Close sidebar when clicking outside
   useEffect(() => {
     const handleOutside = (e) => {
       if (
@@ -43,20 +44,17 @@ export default function Sidebar({ onLogout }) {
     { label: "Pending Approvals", icon: Clock3, to: "/admin/pending-approval" },
   ];
 
-  const handleLogoutClick = () => {
-    setShowLogoutModal(true);
-  };
+  const handleLogoutClick = () => setShowLogoutModal(true);
 
   const confirmLogout = async () => {
     setShowLogoutModal(false);
     await onLogout();
   };
-  
 
   return (
     <>
       {/* Mobile Hamburger */}
-      <button className="mobile-menu-btn" onClick={() => setIsOpen(true)}>
+      <button className="mobile-menu-btn" onClick={() => setIsOpen(true)} type="button">
         <Menu size={26} />
       </button>
 
@@ -67,9 +65,9 @@ export default function Sidebar({ onLogout }) {
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
         {/* BRAND AREA */}
         <div className="sidebar-header">
-          <div
-            className="sidebar-brand"
-            style={{ cursor: "pointer" }}
+          <button
+            className="sidebar-brand sidebar-brand-btn"
+            type="button"
             onClick={() => {
               navigate("/admin/dashboard");
               setIsOpen(false);
@@ -77,7 +75,7 @@ export default function Sidebar({ onLogout }) {
           >
             <img src={IPOPHLLogo} alt="IPOPHL" className="sidebar-logo" />
             <h2 className="sidebar-title">KMS</h2>
-          </div>
+          </button>
         </div>
 
         {/* MENU SECTION */}
@@ -103,56 +101,19 @@ export default function Sidebar({ onLogout }) {
           <DarkModeToggle />
 
           {/* Logout */}
-          <button className="sidebar-item logout" onClick={handleLogoutClick}>
+          <button className="sidebar-item logout" onClick={handleLogoutClick} type="button">
             <LogOut size={20} className="sidebar-icon" />
             <span>Logout</span>
           </button>
         </nav>
       </div>
 
-      {/* Logout Modal */}
-      {showLogoutModal && (
-        <div className="modal-overlay" onClick={() => setShowLogoutModal(false)}>
-          <div
-            className="modal-content logout-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-header">
-              <h2>Confirm Logout</h2>
-              <button
-                className="close-button"
-                onClick={() => setShowLogoutModal(false)}
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <div className="logout-modal-content">
-                <LogOut size={40} className="logout-icon" />
-                <p className="logout-modal-title">
-                  Are you sure you want to logout?
-                </p>
-              </div>
-            </div>
-
-            <div className="modal-footer">
-              <button
-                className="cancel-button"
-                onClick={() => setShowLogoutModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="save-button logout-confirm-btn"
-                onClick={confirmLogout}
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ✅ Separated Logout Modal */}
+      <LogoutModal
+        open={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={confirmLogout}
+      />
     </>
   );
 }
